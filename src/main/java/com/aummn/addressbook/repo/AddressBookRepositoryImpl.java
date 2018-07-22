@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * This class implementing methods for saving, removing and retrieving contacts from the address books.
+ *
+ * @author James Jin
+ * @version 1.0 7/22/2018
+ * @since 1.0
+ */
 public class AddressBookRepositoryImpl {
 
     private Map<Long, AddressBookRecord> addressBookMap = new HashMap();
