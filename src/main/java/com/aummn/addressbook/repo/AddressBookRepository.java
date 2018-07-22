@@ -1,8 +1,8 @@
 package com.aummn.addressbook.repo;
 
 import com.aummn.addressbook.model.AddressBookRecord;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This interface defining methods for saving, removing and retrieving contacts from the address books.
@@ -19,7 +19,7 @@ public interface AddressBookRepository {
      * @param record the address book entry
      * @return the AddressBookRecord object
      */
-    AddressBookRecord save(AddressBookRecord record);
+    AddressBookRecord saveRecord(AddressBookRecord record);
 
     /**
      * Insert a list of records into an address book.
@@ -27,6 +27,22 @@ public interface AddressBookRepository {
      * @param records the address book entries
      * @return a list of AddressBookRecord objects
      */
-    List<AddressBookRecord> saveAll(List<AddressBookRecord> records);
+    List<AddressBookRecord> saveRecords(List<AddressBookRecord> records);
 
+    /**
+     * Remove a record.
+     *
+     * @param id the id of an address book entry
+     *
+     */
+    void removeRecord(Long id);
+
+
+    /**
+     * Find an address book entry by id.
+     *
+     * @param id the id of an address book entry
+     *
+     */
+    Optional<AddressBookRecord> findRecordById(Long id);
 }

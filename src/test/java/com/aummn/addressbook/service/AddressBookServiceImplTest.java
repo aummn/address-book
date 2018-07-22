@@ -12,6 +12,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -43,9 +44,9 @@ public class AddressBookServiceImplTest {
         outputRecord.setPhone(c.getPhone());
         outputRecord.setAbid(1L);
 
-        when(repository.save(eq(inputRecord))).thenReturn(outputRecord);
+        when(repository.saveRecord(eq(inputRecord))).thenReturn(outputRecord);
         Contact savedContact = service.addContact(c, 1L);
-        verify(repository).save(eq(inputRecord));
+        verify(repository).saveRecord(eq(inputRecord));
 
         assertThat(savedContact.getName()).isEqualTo("peter");
         assertThat(savedContact.getPhone()).isEqualTo("0430111002");
@@ -94,12 +95,12 @@ public class AddressBookServiceImplTest {
 
         List<Contact> contacts = Arrays.asList(c1, c2);
 
-        when(repository.saveAll(eq(Arrays.asList(inputRecord1, inputRecord2))))
+        when(repository.saveRecords(eq(Arrays.asList(inputRecord1, inputRecord2))))
                 .thenReturn(Arrays.asList(outputRecord1, outputRecord2));
 
 
         List<Contact> contactList = service.addContacts(contacts, 1L);
-        verify(repository, times(1)).saveAll(eq(Arrays.asList(inputRecord1, inputRecord2)));
+        verify(repository, times(1)).saveRecords(eq(Arrays.asList(inputRecord1, inputRecord2)));
 
         assertThat(contactList).hasSize(2).extracting("id", "name", "phone")
                 .contains(tuple(1L, "peter", "0430111002"),
@@ -176,15 +177,15 @@ public class AddressBookServiceImplTest {
         outputRecord4.setPhone(c2.getPhone());
         outputRecord4.setAbid(2L);
 
-        when(repository.saveAll(eq(Arrays.asList(inputRecord1, inputRecord2))))
+        when(repository.saveRecords(eq(Arrays.asList(inputRecord1, inputRecord2))))
                 .thenReturn(Arrays.asList(outputRecord1, outputRecord2));
 
-        when(repository.saveAll(eq(Arrays.asList(inputRecord3, inputRecord4))))
+        when(repository.saveRecords(eq(Arrays.asList(inputRecord3, inputRecord4))))
                 .thenReturn(Arrays.asList(outputRecord3, outputRecord4));
 
         List<Contact> contactList = service.addContacts(Arrays.asList(c1, c2), Arrays.asList(1L, 2L));
-        verify(repository, times(1)).saveAll(Arrays.asList(inputRecord1, inputRecord2));
-        verify(repository, times(1)).saveAll(Arrays.asList(inputRecord3, inputRecord4));
+        verify(repository, times(1)).saveRecords(Arrays.asList(inputRecord1, inputRecord2));
+        verify(repository, times(1)).saveRecords(Arrays.asList(inputRecord3, inputRecord4));
 
         assertThat(contactList).hasSize(4).extracting("id", "name", "phone")
                 .contains(tuple(1L, "peter", "0430111002"),
@@ -236,4 +237,49 @@ public class AddressBookServiceImplTest {
         List<Contact> contactList = service.addContacts(Arrays.asList(c1, c2), new ArrayList<>());
         assertThat(contactList).isEmpty();
     }
+
+
+    @Test
+    public void findContact() {
+
+        Contact c1 = new Contact();
+        c1.setId(1L);
+        c1.setName("peter");
+        c1.setPhone("0430111002");
+
+        when(repository.findRecordById(1L))
+                .thenReturn(Optional.of(new AddressBookRecord(1L, "peter", "0430111002", 1L)));
+        Optional<Contact> contactOptional = service.findContact(c1);
+        assertThat(contactOptional).isNotEmpty().hasValue(c1);
+    }
+
+    @Test
+    public void findContact_MissingContact() {
+
+        assertThatThrownBy(() ->
+        { service.findContact(null); }).hasMessage("contact is required");
+    }
+
+
+    @Test
+    public void removeContact() {
+
+        Contact c1 = new Contact();
+        c1.setId(1L);
+        c1.setName("peter");
+        c1.setPhone("0430111002");
+
+        doNothing().when(repository).removeRecord(1L);
+
+        service.removeContact(c1);
+        verify(repository, times(1)).removeRecord(1L);
+    }
+
+    @Test
+    public void removeContact_MissingContact() {
+
+        assertThatThrownBy(() ->
+        { service.removeContact(null); }).hasMessage("contact is required");
+    }
+
 }

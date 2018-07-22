@@ -3,6 +3,7 @@ package com.aummn.addressbook.service;
 import com.aummn.addressbook.model.Contact;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * An interface for adding contacts, removing contacts, printing contacts from address books.
@@ -41,5 +42,23 @@ public interface AddressBookService {
      * @return a list of Contact objects
      */
     List<Contact> addContacts(List<Contact> contacts, List<Long> addressBookIds);
+
+    /**
+     * Remove a contact.
+     *
+     * @param contact a contact entry with id, name and phone
+     *
+     */
+    void removeContact(Contact contact);
+
+    /**
+     * Find a contact.
+     *
+     * @param contact a contact entry with id, name and phone
+     * @return an Optional object
+     *
+     */
+    Optional<Contact> findContact(Contact contact);
+
 
 }

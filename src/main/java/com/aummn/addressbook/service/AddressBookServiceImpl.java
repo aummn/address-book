@@ -4,8 +4,8 @@ import com.aummn.addressbook.model.AddressBookRecord;
 import com.aummn.addressbook.model.Contact;
 import com.aummn.addressbook.repo.AddressBookRepositoryImpl;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,7 +26,7 @@ public class AddressBookServiceImpl {
     public Contact addContact(Contact c, long addressBookId) {
         if(c == null) throw new IllegalArgumentException("contact is required");
         AddressBookRecord record = new AddressBookRecord(c.getName(),c.getPhone(), addressBookId);
-        AddressBookRecord savedRecord = repo.save(record);
+        AddressBookRecord savedRecord = repo.saveRecord(record);
         return new Contact(savedRecord.getId(),savedRecord.getName(), savedRecord.getPhone());
     }
 
@@ -39,8 +39,8 @@ public class AddressBookServiceImpl {
                         new AddressBookRecord(contact.getName(), contact.getPhone(), addressBookId))
                 .collect(Collectors.toList());
 
-        // save records to the address book
-        return repo.saveAll(records).stream()
+        // saveRecord records to the address book
+        return repo.saveRecords(records).stream()
                 .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
                 .collect(Collectors.toList());
     }
@@ -57,4 +57,16 @@ public class AddressBookServiceImpl {
         return contactList;
     }
 
+    public void removeContact(Contact contact) {
+        if(contact == null) throw new IllegalArgumentException("contact is required");
+        repo.removeRecord(contact.getId());
+
+    }
+
+    public Optional<Contact> findContact(Contact contact) {
+        if(contact == null) throw new IllegalArgumentException("contact is required");
+        return repo.findRecordById(contact.getId())
+                .map(r -> Optional.of(new Contact(r.getId(), r.getName(), r.getPhone())))
+                .orElse(Optional.empty());
+    }
 }
