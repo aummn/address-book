@@ -4,9 +4,9 @@ import com.aummn.addressbook.model.AddressBookRecord;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.concurrent.atomic.AtomicLong;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public class AddressBookRepositoryImplTest {
 
@@ -30,6 +30,6 @@ public class AddressBookRepositoryImplTest {
         Long key = keyGenerator.getAndIncrement();
         AddressBookRecord record = new AddressBookRecord(key, "peter", "0430111002", 1);
         AddressBookRecord savedRecord = repo.save(record);
-        assertThat(savedRecord, is(record));
+        assertThat(savedRecord).isEqualTo(record);
     }
 }

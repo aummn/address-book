@@ -1,57 +1,58 @@
 package com.aummn.addressbook.service;
 
+import com.aummn.addressbook.model.AddressBookRecord;
 import com.aummn.addressbook.model.Contact;
 import com.aummn.addressbook.repo.AddressBookRepositoryImpl;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AddressBookServiceImplTest {
 
-    AddressBookServiceImpl service = null;
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void runBeforeEveryTest() {
-        service = new AddressBookServiceImpl(new AddressBookRepositoryImpl());
-    }
+    @Mock
+    private AddressBookRepositoryImpl repository;
 
-    @After
-    public void runAfterEveryTest() {
-        service = null;
-    }
+    @InjectMocks
+    private AddressBookServiceImpl service;
+
 
     @Test
     public void addOneContactToSingleAddressBook() {
         Contact c = new Contact();
         c.setName("peter");
         c.setPhone("0430111002");
+
+        AddressBookRecord record = new AddressBookRecord();
+        record.setId(1L);
+        record.setName(c.getName());
+        record.setPhone(c.getPhone());
+        record.setAbid(1L);
+
+        when(repository.save(any(AddressBookRecord.class))).thenReturn(record);
         Contact savedContact = service.addContact(c, 1L);
-        assertThat(savedContact.getName(), is(c.getName()));
-        assertThat(savedContact.getPhone(), is(c.getPhone()));
-        assertThat(savedContact.getId(), is(1L));
+        verify(repository).save(any(AddressBookRecord.class));
+
+        assertThat(savedContact.getName()).isEqualTo("peter");
+        assertThat(savedContact.getPhone()).isEqualTo("0430111002");
+        assertThat(savedContact.getId()).isEqualTo(1L);
     }
 
     @Test
-    public void addTwoContactsToSingleAddressBook() {
-        Contact c1 = new Contact();
-        c1.setName("peter");
-        c1.setPhone("0430111002");
-        Contact savedContact = service.addContact(c1, 1L);
-        assertThat(savedContact.getName(), is(c1.getName()));
-        assertThat(savedContact.getPhone(), is(c1.getPhone()));
-        assertThat(savedContact.getId(), is(1L));
+    public void addOneEmptyContactToSingleAddressBook() {
 
-        Contact c2 = new Contact();
-        c2.setName("donald");
-        c2.setPhone("0435495021");
-        savedContact = service.addContact(c2, 1L);
-
-        assertThat(savedContact.getName(), is(c2.getName()));
-        assertThat(savedContact.getPhone(), is(c2.getPhone()));
-        assertThat(savedContact.getId(), is(2L));
+        assertThatThrownBy(() ->
+          { service.addContact(null, 1L); }).hasMessage("contact is required");
     }
 
 

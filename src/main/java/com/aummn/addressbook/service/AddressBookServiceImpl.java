@@ -20,6 +20,7 @@ public class AddressBookServiceImpl {
     }
 
     public Contact addContact(Contact c, long addressBookId) {
+        if(c == null) throw new IllegalArgumentException("contact is required");
         AddressBookRecord record = new AddressBookRecord(c.getId(),c.getName(),c.getPhone(), addressBookId);
         AddressBookRecord savedRecord = repo.save(record);
         return new Contact(savedRecord.getId(),savedRecord.getName(), savedRecord.getPhone());
