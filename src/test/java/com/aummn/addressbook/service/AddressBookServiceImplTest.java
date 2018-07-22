@@ -92,12 +92,14 @@ public class AddressBookServiceImplTest {
         outputRecord2.setPhone(c2.getPhone());
         outputRecord2.setAbid(1L);
 
-
-        when(repository.save(eq(inputRecord1))).thenReturn(outputRecord1);
-        when(repository.save(eq(inputRecord2))).thenReturn(outputRecord2);
         List<Contact> contacts = Arrays.asList(c1, c2);
+
+        when(repository.saveAll(eq(Arrays.asList(inputRecord1, inputRecord2))))
+                .thenReturn(Arrays.asList(outputRecord1, outputRecord2));
+
+
         List<Contact> contactList = service.addContacts(contacts, 1L);
-        verify(repository, times(2)).save(any(AddressBookRecord.class));
+        verify(repository, times(1)).saveAll(eq(Arrays.asList(inputRecord1, inputRecord2)));
 
         assertThat(contactList).hasSize(2).extracting("id", "name", "phone")
                 .contains(tuple(1L, "peter", "0430111002"),
@@ -174,13 +176,15 @@ public class AddressBookServiceImplTest {
         outputRecord4.setPhone(c2.getPhone());
         outputRecord4.setAbid(2L);
 
-        when(repository.save(eq(inputRecord1))).thenReturn(outputRecord1);
-        when(repository.save(eq(inputRecord2))).thenReturn(outputRecord2);
-        when(repository.save(eq(inputRecord3))).thenReturn(outputRecord3);
-        when(repository.save(eq(inputRecord4))).thenReturn(outputRecord4);
+        when(repository.saveAll(eq(Arrays.asList(inputRecord1, inputRecord2))))
+                .thenReturn(Arrays.asList(outputRecord1, outputRecord2));
+
+        when(repository.saveAll(eq(Arrays.asList(inputRecord3, inputRecord4))))
+                .thenReturn(Arrays.asList(outputRecord3, outputRecord4));
 
         List<Contact> contactList = service.addContacts(Arrays.asList(c1, c2), Arrays.asList(1L, 2L));
-        verify(repository, times(4)).save(any(AddressBookRecord.class));
+        verify(repository, times(1)).saveAll(Arrays.asList(inputRecord1, inputRecord2));
+        verify(repository, times(1)).saveAll(Arrays.asList(inputRecord3, inputRecord4));
 
         assertThat(contactList).hasSize(4).extracting("id", "name", "phone")
                 .contains(tuple(1L, "peter", "0430111002"),

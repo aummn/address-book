@@ -32,10 +32,17 @@ public class AddressBookServiceImpl {
 
     public List<Contact> addContacts(List<Contact> contacts, long addressBookId) {
         if(contacts == null) throw new IllegalArgumentException("contacts is required");
-        List contactList = contacts.stream()
-                .map(contact -> this.addContact(contact, addressBookId))
+
+        // build the list of AddressBookRecord objects
+        List<AddressBookRecord> records = contacts.stream()
+                .map(contact ->
+                        new AddressBookRecord(contact.getName(), contact.getPhone(), addressBookId))
                 .collect(Collectors.toList());
-        return contactList;
+
+        // save records to the address book
+        return repo.saveAll(records).stream()
+                .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<Contact> addContacts(List<Contact> contacts, List<Long> addressBookIds) {
