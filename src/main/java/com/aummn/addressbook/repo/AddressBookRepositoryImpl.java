@@ -22,8 +22,8 @@ public class AddressBookRepositoryImpl {
 
     public AddressBookRecord save(AddressBookRecord record) {
         Long key = keyGenerator.getAndIncrement();
-        addressBookMap.put(key, record);
         record.setId(key);
+        addressBookMap.put(key, record);
         return record;
     }
 }

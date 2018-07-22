@@ -11,12 +11,18 @@ import java.util.Objects;
  */
 public class AddressBookRecord {
 
-    private long id;
+    private long id = 0;
     private String name;
     private String phone;
     private long abid;
 
     public AddressBookRecord() {}
+
+    public AddressBookRecord(String name, String phone, long abid) {
+        this.name = name;
+        this.phone = phone;
+        this.abid = abid;
+    }
 
     public AddressBookRecord(long id, String name, String phone, long abid) {
         this.id = id;
