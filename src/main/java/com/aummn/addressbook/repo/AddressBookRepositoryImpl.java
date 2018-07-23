@@ -57,5 +57,14 @@ public class AddressBookRepositoryImpl {
                 .collect(Collectors.toList());
     }
 
+    public List<AddressBookRecord> findAllRecordsByAbids(List<Long> addressBookIds) {
+        if(addressBookIds == null) throw new IllegalArgumentException("addressBookIds is required");
+        return addressBookIds.stream()
+                .map(addressBookId -> this.findAllRecordsByAbid(addressBookId))
+                .flatMap(addressBookRecord -> addressBookRecord.stream())
+                .collect(Collectors.toList());
+    }
+
+
 
 }

@@ -379,4 +379,52 @@ public class AddressBookServiceImplTest {
         assertThat(contacts).isEmpty();
     }
 
+
+    @Test
+    public void printContacts_MultipleAddressBooks() {
+
+        AddressBookRecord record1 = new AddressBookRecord();
+        record1.setId(1L);
+        record1.setName("peter");
+        record1.setPhone("0430111002");
+        record1.setAbid(1L);
+
+        AddressBookRecord record2 = new AddressBookRecord();
+        record2.setId(2L);
+        record2.setName("donald");
+        record2.setPhone("0435495021");
+        record2.setAbid(2L);
+
+        AddressBookRecord record3 = new AddressBookRecord();
+        record3.setId(3L);
+        record3.setName("dick");
+        record3.setPhone("0402124587");
+        record3.setAbid(3L);
+
+        when(repository.findAllRecordsByAbids(Arrays.asList(1L, 2L, 3L))).thenReturn(Arrays.asList(record1, record2, record3));
+        List<Contact> contacts = service.printContacts(Arrays.asList(1L, 2L, 3L));
+        verify(repository, times(1)).findAllRecordsByAbids(Arrays.asList(1L, 2L, 3L));
+        assertThat(contacts).isNotEmpty().hasSize(3).extracting("id", "name", "phone")
+                .contains(tuple(1L, "peter", "0430111002"),
+                        tuple(2L, "donald", "0435495021"),
+                        tuple(3L, "dick", "0402124587"));
+    }
+
+    @Test
+    public void printContacts_MultipleAddressBooks_NonExistingAbids() {
+
+        when(repository.findAllRecordsByAbids(Arrays.asList(1L, 2L, 3L))).thenReturn(new ArrayList<>());
+        List<Contact> contacts = service.printContacts(Arrays.asList(1L, 2L, 3L));
+        verify(repository, times(1)).findAllRecordsByAbids(Arrays.asList(1L, 2L, 3L));
+        assertThat(contacts).isEmpty();
+    }
+
+    @Test
+    public void printContacts_MultipleAddressBooks_MissingContacts() {
+
+        assertThatThrownBy(() ->
+        { service.printContacts((List)null); }).hasMessage("addressBookIds is required");
+    }
+
+
 }

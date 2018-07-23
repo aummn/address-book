@@ -61,6 +61,12 @@ public interface AddressBookRepository {
      */
     List<AddressBookRecord> findAllRecordsByAbid(long addressBookId);
 
-
+    /**
+     * Find all records from multiple address books.
+     *
+     * @param addressBookIds the ids of address books
+     * @return a list of AddressBookRecord objects
+     */
+    List<AddressBookRecord> findAllRecordsByAbids(List<Long> addressBookIds);
 
 }

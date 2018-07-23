@@ -81,4 +81,11 @@ public class AddressBookServiceImpl {
                 .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
                 .collect(Collectors.toList());
     }
+
+    public List<Contact> printContacts(List<Long> addressBookIds) {
+        if(addressBookIds == null) throw new IllegalArgumentException("addressBookIds is required");
+        return repo.findAllRecordsByAbids(addressBookIds).stream()
+                .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
+                .collect(Collectors.toList());
+    }
 }

@@ -160,4 +160,47 @@ public class AddressBookRepositoryImplTest {
         assertThat(records).isEmpty();
     }
 
+
+    @Test
+    public void findAllRecordsByAbids() {
+        Long key = keyGenerator.get();
+        AddressBookRecord record1 = new AddressBookRecord(key, "peter", "0430111002", 1L);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record2 = new AddressBookRecord(key, "donald", "0435495021", 1L);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record3 = new AddressBookRecord(key, "dick", "0402124587", 1L);
+        repo.saveRecords(Arrays.asList(record1, record2, record3));
+
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record4 = new AddressBookRecord(key, "tom", "0422484920", 2L);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record5 = new AddressBookRecord(key, "sam", "0430823002", 2L);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record6 = new AddressBookRecord(key, "larry", "0435498247", 2L);
+        repo.saveRecords(Arrays.asList(record4, record5, record6));
+
+
+        List<AddressBookRecord> records = repo.findAllRecordsByAbids(Arrays.asList(1L, 2L));
+        assertThat(records).isNotEmpty().hasSize(6).extracting("id", "name", "phone", "abid")
+                .contains(tuple(1L, "peter", "0430111002", 1L),
+                        tuple(2L, "donald", "0435495021", 1L),
+                        tuple(3L, "dick", "0402124587", 1L),
+                        tuple(4L, "tom", "0422484920", 2L),
+                        tuple(5L, "sam", "0430823002", 2L),
+                        tuple(6L, "larry", "0435498247", 2L));
+    }
+
+
+    @Test
+    public void findAllRecordsByAbids_EmptyAbids() {
+        assertThatThrownBy(() ->
+        { repo.findAllRecordsByAbids(null); }).hasMessage("addressBookIds is required");
+    }
+
+    @Test
+    public void findAllRecordsByAbids_NonExistingAbids() {
+        List<AddressBookRecord> records = repo.findAllRecordsByAbids(Arrays.asList(1L, 2L));
+        assertThat(records).isEmpty();
+    }
+
 }

@@ -76,4 +76,16 @@ public interface AddressBookService {
      *
      */
     List<Contact> printContacts(Long addressBookId);
+
+    /**
+     * Find all contacts from multiple address books.
+     *
+     * @param addressBookIds the ids of address books
+     * @return a list of Contact objects
+     *
+     */
+    List<Contact> printContacts(List<Long> addressBookIds);
+
+
+
 }
