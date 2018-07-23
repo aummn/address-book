@@ -75,5 +75,10 @@ public class AddressBookServiceImpl {
         List<Long> ids = contacts.stream().map(c -> c.getId()).collect(Collectors.toList());
         repo.removeRecords(ids);
     }
-    
+
+    public List<Contact> printContacts(Long addressBookId) {
+        return repo.findAllRecordsByAbid(addressBookId).stream()
+                .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
+                .collect(Collectors.toList());
+    }
 }

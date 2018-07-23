@@ -136,4 +136,28 @@ public class AddressBookRepositoryImplTest {
         { repo.removeRecords(null); }).hasMessage("ids is required");
     }
 
+
+    @Test
+    public void findAllRecordsByAbid() {
+        Long key = keyGenerator.get();
+        AddressBookRecord record1 = new AddressBookRecord(key, "peter", "0430111002", 1L);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record2 = new AddressBookRecord(key, "donald", "0435495021", 1L);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record3 = new AddressBookRecord(key, "dick", "0402124587", 1L);
+        repo.saveRecords(Arrays.asList(record1, record2, record3));
+
+        List<AddressBookRecord> records = repo.findAllRecordsByAbid(1L);
+        assertThat(records).isNotEmpty().hasSize(3).extracting("id", "name", "phone", "abid")
+                .contains(tuple(1L, "peter", "0430111002", 1L),
+                        tuple(2L, "donald", "0435495021", 1L),
+                        tuple(3L, "dick", "0402124587", 1L));
+    }
+
+    @Test
+    public void findAllRecordsByAbid_NonExistingAbid() {
+        List<AddressBookRecord> records = repo.findAllRecordsByAbid(6L);
+        assertThat(records).isEmpty();
+    }
+
 }

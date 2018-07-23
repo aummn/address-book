@@ -52,4 +52,15 @@ public interface AddressBookRepository {
      *
      */
     Optional<AddressBookRecord> findRecordById(Long id);
+
+    /**
+     * Find all records from an address book.
+     *
+     * @param addressBookId the id of an address book
+     *
+     */
+    List<AddressBookRecord> findAllRecordsByAbid(long addressBookId);
+
+
+
 }

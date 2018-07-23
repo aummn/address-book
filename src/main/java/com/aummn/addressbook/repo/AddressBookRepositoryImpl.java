@@ -50,6 +50,12 @@ public class AddressBookRepositoryImpl {
         return Optional.ofNullable(addressBookMap.get(id));
     }
 
+    public List<AddressBookRecord> findAllRecordsByAbid(long addressBookId) {
+        return addressBookMap.entrySet().stream()
+                .filter(entry -> entry.getValue().getAbid() == addressBookId)
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
+    }
 
 
 }

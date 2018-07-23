@@ -320,4 +320,63 @@ public class AddressBookServiceImplTest {
         { service.removeContacts(null); }).hasMessage("contacts is required");
     }
 
+
+    @Test
+    public void printContacts() {
+
+        AddressBookRecord record1 = new AddressBookRecord();
+        record1.setId(1L);
+        record1.setName("peter");
+        record1.setPhone("0430111002");
+        record1.setAbid(1L);
+
+        AddressBookRecord record2 = new AddressBookRecord();
+        record2.setId(2L);
+        record2.setName("donald");
+        record2.setPhone("0435495021");
+        record2.setAbid(1L);
+
+        AddressBookRecord record3 = new AddressBookRecord();
+        record3.setId(3L);
+        record3.setName("dick");
+        record3.setPhone("0402124587");
+        record3.setAbid(1L);
+
+        when(repository.findAllRecordsByAbid(1L)).thenReturn(Arrays.asList(record1, record2, record3));
+        List<Contact> contacts = service.printContacts(1L);
+        verify(repository, times(1)).findAllRecordsByAbid(1L);
+        assertThat(contacts).isNotEmpty().hasSize(3).extracting("id", "name", "phone")
+                .contains(tuple(1L, "peter", "0430111002"),
+                        tuple(2L, "donald", "0435495021"),
+                        tuple(3L, "dick", "0402124587"));
+    }
+
+
+    @Test
+    public void printContacts_NonExistingAbid() {
+
+        AddressBookRecord record1 = new AddressBookRecord();
+        record1.setId(1L);
+        record1.setName("peter");
+        record1.setPhone("0430111002");
+        record1.setAbid(1L);
+
+        AddressBookRecord record2 = new AddressBookRecord();
+        record2.setId(2L);
+        record2.setName("donald");
+        record2.setPhone("0435495021");
+        record2.setAbid(1L);
+
+        AddressBookRecord record3 = new AddressBookRecord();
+        record3.setId(3L);
+        record3.setName("dick");
+        record3.setPhone("0402124587");
+        record3.setAbid(1L);
+
+        when(repository.findAllRecordsByAbid(1L)).thenReturn(new ArrayList());
+        List<Contact> contacts = service.printContacts(1L);
+        verify(repository, times(1)).findAllRecordsByAbid(1L);
+        assertThat(contacts).isEmpty();
+    }
+
 }
