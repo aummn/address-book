@@ -94,4 +94,17 @@ public class AddressBookRepositoryImplTest {
         assertThat(recordOptional).isNotEmpty().hasValue(record2);
     }
 
+    @Test
+    public void findRecordById_NonExistingRecord() {
+        Long key = keyGenerator.get();
+        AddressBookRecord record1 = new AddressBookRecord(key, "peter", "0430111002", 1);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record2 = new AddressBookRecord(key, "donald", "0435495021", 1);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record3 = new AddressBookRecord(key, "dick", "0402124587", 1);
+        repo.saveRecords(Arrays.asList(record1, record2, record3));
+
+        Optional<AddressBookRecord> recordOptional = repo.findRecordById(6L);
+        assertThat(recordOptional).isEmpty();
+    }
 }

@@ -254,6 +254,19 @@ public class AddressBookServiceImplTest {
     }
 
     @Test
+    public void findContact_NonExistingContact() {
+
+        Contact c1 = new Contact();
+        c1.setId(1L);
+        c1.setName("peter");
+        c1.setPhone("0430111002");
+
+        when(repository.findRecordById(1L)).thenReturn(Optional.empty());
+        Optional<Contact> contactOptional = service.findContact(c1);
+        assertThat(contactOptional).isEmpty();
+    }
+
+    @Test
     public void findContact_MissingContact() {
 
         assertThatThrownBy(() ->
