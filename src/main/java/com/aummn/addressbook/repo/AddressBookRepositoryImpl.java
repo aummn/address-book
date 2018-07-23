@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @version 1.0 7/22/2018
  * @since 1.0
  */
-public class AddressBookRepositoryImpl {
+public class AddressBookRepositoryImpl implements AddressBookRepository {
 
     private Map<Long, AddressBookRecord> addressBookMap = new HashMap();
     private AtomicLong keyGenerator = new AtomicLong(1);
