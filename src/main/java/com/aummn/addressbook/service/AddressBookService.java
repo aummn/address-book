@@ -86,6 +86,14 @@ public interface AddressBookService {
      */
     List<Contact> printContacts(List<Long> addressBookIds);
 
+    /**
+     * Find all unique contacts from multiple address books.
+     *
+     * @param addressBookIds the ids of address books
+     * @return a list of Contact objects
+     *
+     */
+    List<Contact> printUniqueContacts(List<Long> addressBookIds);
 
 
 }

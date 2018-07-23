@@ -6,6 +6,10 @@ import com.aummn.addressbook.repo.AddressBookRepositoryImpl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -15,7 +19,7 @@ import java.util.stream.Collectors;
  * @version 1.0 7/22/2018
  * @since 1.0
  */
-public class AddressBookServiceImpl {
+public class AddressBookServiceImpl implements AddressBookService {
 
     private AddressBookRepositoryImpl repo = null;
 
@@ -87,5 +91,18 @@ public class AddressBookServiceImpl {
         return repo.findAllRecordsByAbids(addressBookIds).stream()
                 .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
                 .collect(Collectors.toList());
+    }
+
+    public List<Contact> printUniqueContacts(List<Long> addressBookIds) {
+        if(addressBookIds == null) throw new IllegalArgumentException("addressBookIds is required");
+        return repo.findAllRecordsByAbids(addressBookIds).stream()
+                .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
+                .filter(distinctByKey(Contact::getContents))
+                .collect(Collectors.toList());
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> uniqueContactSet = ConcurrentHashMap.newKeySet();
+        return t -> uniqueContactSet.add(keyExtractor.apply(t));
     }
 }

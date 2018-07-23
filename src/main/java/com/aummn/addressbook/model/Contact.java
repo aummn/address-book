@@ -52,6 +52,11 @@ public class Contact {
         this.phone = phone;
     }
 
+    public String getContents() {
+        return this.name + this.phone;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
