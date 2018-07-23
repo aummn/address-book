@@ -8,6 +8,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -90,6 +94,41 @@ public class AddressBookInfoServiceImplTest {
     public void removeAddressBookInfo_MissingAddressBookInfo() {
         assertThatThrownBy(() ->
         { service.removeAddressBookInfo(null); }).hasMessage("address book info is required");
+    }
+
+
+    @Test
+    public void findAllAddressBookInfo() {
+        AddressBookInfoRecord outputRecord1 = new AddressBookInfoRecord();
+        outputRecord1.setId(1L);
+        outputRecord1.setName("vip");
+
+        AddressBookInfoRecord outputRecord2 = new AddressBookInfoRecord();
+        outputRecord2.setId(2L);
+        outputRecord2.setName("melbourne");
+
+        AddressBookInfoRecord outputRecord3 = new AddressBookInfoRecord();
+        outputRecord3.setId(3L);
+        outputRecord3.setName("sydney");
+
+        when(repository.findAllAddressBookInfo())
+                .thenReturn(Arrays.asList(outputRecord1, outputRecord2, outputRecord3));
+        List<AddressBookInfo> savedInfo = service.findAllAddressBookInfo();
+        verify(repository).findAllAddressBookInfo();
+
+        assertThat(savedInfo).isNotEmpty().hasSize(3).extracting("id", "name")
+                .contains(tuple(1L, "vip"),
+                        tuple(2L, "melbourne"),
+                        tuple(3L, "sydney"));
+    }
+
+    @Test
+    public void findAllAddressBookInfo_EmptyAddressBookInfo() {
+        when(repository.findAllAddressBookInfo())
+                .thenReturn(new ArrayList<>());
+        List<AddressBookInfo> savedInfo = service.findAllAddressBookInfo();
+        verify(repository).findAllAddressBookInfo();
+        assertThat(savedInfo).isEmpty();
     }
 
 }

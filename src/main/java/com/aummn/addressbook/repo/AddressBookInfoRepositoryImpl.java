@@ -2,9 +2,11 @@ package com.aummn.addressbook.repo;
 
 import com.aummn.addressbook.model.AddressBookInfoRecord;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * This class implementing methods for saving, removing and retrieving address info.
@@ -38,5 +40,11 @@ public class AddressBookInfoRepositoryImpl implements AddressBookInfoRepository 
 
     public boolean existsById(long id) {
         return (addressBookInfoMap.get(id) != null);
+    }
+
+    public List<AddressBookInfoRecord> findAllAddressBookInfo() {
+        return addressBookInfoMap.entrySet().stream()
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,8 @@ import com.aummn.addressbook.model.AddressBookInfoRecord;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -118,4 +120,30 @@ public class AddressBookInfoRepositoryImplTest {
         boolean found = repo.existsById(4L);
         assertThat(found).isFalse();
     }
+
+    @Test
+    public void findAllAddressBookInfo() {
+        Long key = keyGenerator.get();
+        AddressBookInfoRecord record1 = new AddressBookInfoRecord(key, "vip");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record2 = new AddressBookInfoRecord(key, "melbourne");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record3 = new AddressBookInfoRecord(key, "sydney");
+        repo.saveAddressBookInfo(record1);
+        repo.saveAddressBookInfo(record2);
+        repo.saveAddressBookInfo(record3);
+
+        List<AddressBookInfoRecord> records = repo.findAllAddressBookInfo();
+        assertThat(records).isNotEmpty().hasSize(3).extracting("id", "name")
+                .contains(tuple(1L, "vip"),
+                        tuple(2L, "melbourne"),
+                        tuple(3L, "sydney"));
+    }
+
+    @Test
+    public void findAllAddressBookInfo_EmptyAddressBookInfo() {
+        List<AddressBookInfoRecord> records = repo.findAllAddressBookInfo();
+        assertThat(records).isEmpty();
+    }
+
 }

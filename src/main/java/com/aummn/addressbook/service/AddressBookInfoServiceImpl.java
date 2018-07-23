@@ -3,7 +3,10 @@ package com.aummn.addressbook.service;
 import com.aummn.addressbook.model.AddressBookInfo;
 import com.aummn.addressbook.model.AddressBookInfoRecord;
 import com.aummn.addressbook.repo.AddressBookInfoRepositoryImpl;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class is designed for adding / removing / printing address book info.
@@ -38,6 +41,12 @@ public class AddressBookInfoServiceImpl implements AddressBookInfoService {
         return repo.findAddressBookInfoById(id)
                 .map(r -> Optional.of(new AddressBookInfo(r.getId(), r.getName())))
                 .orElse(Optional.empty());
+    }
+
+    public List<AddressBookInfo> findAllAddressBookInfo() {
+        return repo.findAllAddressBookInfo().stream()
+                .map(r -> new AddressBookInfo(r.getId(), r.getName()))
+                .collect(Collectors.toList());
     }
 
 }

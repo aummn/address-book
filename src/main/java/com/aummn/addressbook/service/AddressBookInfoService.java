@@ -1,6 +1,8 @@
 package com.aummn.addressbook.service;
 
 import com.aummn.addressbook.model.AddressBookInfo;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,5 +38,13 @@ public interface AddressBookInfoService {
      *
      */
     Optional<AddressBookInfo> findAddressBookInfo(long id);
+
+    /**
+     * Find all address book info.
+     *
+     * @return an list of AddressBookInfo object
+     *
+     */
+    List<AddressBookInfo> findAllAddressBookInfo();
 
 }
