@@ -60,5 +60,20 @@ public interface AddressBookService {
      */
     Optional<Contact> findContact(Contact contact);
 
+    /**
+     * Remove a list of contacts.
+     *
+     * @param contacts a list of Contact objects
+     *
+     */
+    void removeContacts(List<Contact> contacts);
 
+    /**
+     * Find all contacts of an address book.
+     *
+     * @param addressBookId the id of an address book
+     * @return a list of Contact objects
+     *
+     */
+    List<Contact> printContacts(Long addressBookId);
 }

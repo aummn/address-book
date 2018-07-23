@@ -69,4 +69,11 @@ public class AddressBookServiceImpl {
                 .map(r -> Optional.of(new Contact(r.getId(), r.getName(), r.getPhone())))
                 .orElse(Optional.empty());
     }
+
+    public void removeContacts(List<Contact> contacts) {
+        if(contacts == null) throw new IllegalArgumentException("contacts is required");
+        List<Long> ids = contacts.stream().map(c -> c.getId()).collect(Collectors.toList());
+        repo.removeRecords(ids);
+    }
+    
 }

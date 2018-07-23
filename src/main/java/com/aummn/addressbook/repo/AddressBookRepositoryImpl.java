@@ -39,8 +39,17 @@ public class AddressBookRepositoryImpl {
         addressBookMap.remove(id);
     }
 
+    public void removeRecords(List<Long> ids) {
+        if(ids == null) throw new IllegalArgumentException("ids is required");
+        for(Long id: ids) {
+            addressBookMap.remove(id);
+        }
+    }
+
     public Optional<AddressBookRecord> findRecordById(Long id) {
         return Optional.ofNullable(addressBookMap.get(id));
     }
+
+
 
 }

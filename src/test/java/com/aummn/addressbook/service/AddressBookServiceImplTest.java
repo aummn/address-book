@@ -295,4 +295,29 @@ public class AddressBookServiceImplTest {
         { service.removeContact(null); }).hasMessage("contact is required");
     }
 
+    @Test
+    public void removeContacts() {
+
+        Contact c1 = new Contact();
+        c1.setId(1L);
+        c1.setName("peter");
+        c1.setPhone("0430111002");
+
+        Contact c2 = new Contact();
+        c2.setId(2L);
+        c2.setName("donald");
+        c2.setPhone("0435495021");
+
+        doNothing().when(repository).removeRecords(Arrays.asList(1L, 2L));
+        service.removeContacts(Arrays.asList(c1, c2));
+        verify(repository, times(1)).removeRecords(Arrays.asList(1L, 2L));
+    }
+
+    @Test
+    public void removeContacts_MissingContacts() {
+
+        assertThatThrownBy(() ->
+        { service.removeContacts(null); }).hasMessage("contacts is required");
+    }
+
 }

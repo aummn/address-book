@@ -107,4 +107,33 @@ public class AddressBookRepositoryImplTest {
         Optional<AddressBookRecord> recordOptional = repo.findRecordById(6L);
         assertThat(recordOptional).isEmpty();
     }
+
+    @Test
+    public void removeRecords() {
+        Long key = keyGenerator.get();
+        AddressBookRecord record1 = new AddressBookRecord(key, "peter", "0430111002", 1);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record2 = new AddressBookRecord(key, "donald", "0435495021", 1);
+        key = keyGenerator.incrementAndGet();
+        AddressBookRecord record3 = new AddressBookRecord(key, "dick", "0402124587", 1);
+        repo.saveRecords(Arrays.asList(record1, record2, record3));
+
+        repo.removeRecords(Arrays.asList(1L, 2L, 3L));
+        Optional<AddressBookRecord> recordOptional = repo.findRecordById(1L);
+        assertThat(recordOptional).isEmpty();
+
+        recordOptional = repo.findRecordById(2L);
+        assertThat(recordOptional).isEmpty();
+
+        recordOptional = repo.findRecordById(3L);
+        assertThat(recordOptional).isEmpty();
+    }
+
+    @Test
+    public void removeRecords_MissingIds() {
+
+        assertThatThrownBy(() ->
+        { repo.removeRecords(null); }).hasMessage("ids is required");
+    }
+
 }

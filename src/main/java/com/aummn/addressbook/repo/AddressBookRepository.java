@@ -37,6 +37,13 @@ public interface AddressBookRepository {
      */
     void removeRecord(Long id);
 
+    /**
+     * Remove a list of records.
+     *
+     * @param ids the ids of address book entries
+     *
+     */
+    void removeRecords(List<Long> ids);
 
     /**
      * Find an address book entry by id.
