@@ -17,13 +17,13 @@ public interface CommandHolder {
      *
      * @param comd a object implementing the <code>Command</code> interface
      */
-    public void setCommand(Command comd);
+    void setCommand(Command comd);
     
     /**
      * Gets a <code>Command</code> object.
      *
      * @return a <code>Command</code>object for this object
      */
-    public Command getCommand();
+    Command getCommand();
     
 }

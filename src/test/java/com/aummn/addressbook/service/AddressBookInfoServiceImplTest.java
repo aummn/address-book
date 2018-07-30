@@ -51,7 +51,7 @@ public class AddressBookInfoServiceImplTest {
     public void addAddressBookInfo_MissingAddressBookInfo() {
 
         assertThatThrownBy(() ->
-          { service.addAddressBookInfo(null); }).hasMessage("address book info is required");
+                service.addAddressBookInfo(null)).hasMessage("address book info is required");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class AddressBookInfoServiceImplTest {
     @Test
     public void removeAddressBookInfo_MissingAddressBookInfo() {
         assertThatThrownBy(() ->
-        { service.removeAddressBookInfo(null); }).hasMessage("address book info is required");
+                service.removeAddressBookInfo(null)).hasMessage("address book info is required");
     }
 
 

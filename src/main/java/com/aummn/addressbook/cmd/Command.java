@@ -15,6 +15,6 @@ public interface Command {
     /**
      * Executes the actual task specified by <code>Command</code> object.
      */
-    public void execute();
+    void execute();
     
 }

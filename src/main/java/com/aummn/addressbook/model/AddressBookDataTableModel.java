@@ -44,7 +44,7 @@ public class AddressBookDataTableModel extends AbstractTableModel {
      * @param rowCount the number of row in a table
      * @param columnCount the number of columns in a table
      */
-    public AddressBookDataTableModel(List list, String[] recordFieldNames,
+    public AddressBookDataTableModel(List<Contact> list, String[] recordFieldNames,
                                  int rowCount, int columnCount) {
         
         this.list = list;
@@ -52,10 +52,10 @@ public class AddressBookDataTableModel extends AbstractTableModel {
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         
-    };
+    }
     
     /**
-     * Returns the number of colums in the table.
+     * Returns the number of columns in the table.
      *
      * @return an <code>int</code> representing the count of columns in
      * the table
@@ -91,7 +91,7 @@ public class AddressBookDataTableModel extends AbstractTableModel {
         Object value = "";
         if (list != null) {
 
-            Contact contact = (Contact)list.get(row);
+            Contact contact = list.get(row);
 
             switch(column) {
                 case 0:

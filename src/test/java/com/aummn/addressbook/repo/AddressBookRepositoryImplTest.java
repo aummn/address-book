@@ -150,7 +150,7 @@ public class AddressBookRepositoryImplTest {
     @Test
     public void findAllRecordsByAbids_EmptyAbids() {
         assertThatThrownBy(() ->
-        { repo.findAllRecordsByAbids(null); }).hasMessage("addressBook Ids is required");
+                repo.findAllRecordsByAbids(null)).hasMessage("addressBook Ids is required");
     }
 
     @Test

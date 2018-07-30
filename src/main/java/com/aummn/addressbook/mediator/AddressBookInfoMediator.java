@@ -2,14 +2,12 @@ package com.aummn.addressbook.mediator;
 
 import com.aummn.addressbook.model.AddressBookInfo;
 import com.aummn.addressbook.model.AddressBookInfoDataTableModel;
-import com.aummn.addressbook.model.AddressBookInfoItem;
 import com.aummn.addressbook.service.AddressBookInfoService;
 import com.aummn.addressbook.service.AddressBookInfoServiceImpl;
 import com.aummn.addressbook.ui.*;
 
 import javax.swing.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -36,7 +34,7 @@ public class AddressBookInfoMediator {
      */
     public AddressBookInfoMediator() {
         this.addressBookInfoService = new AddressBookInfoServiceImpl();
-        this.dataTableModel = new AddressBookInfoDataTableModel(new ArrayList(),
+        this.dataTableModel = new AddressBookInfoDataTableModel(new ArrayList<>(),
                 AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES,
                 AddressBookInfoDataTable.ROW_COUNT, AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES.length);
     }
@@ -51,12 +49,12 @@ public class AddressBookInfoMediator {
         List<AddressBookInfo> addressBookInfoList = addressBookInfoService.findAddressBookInfoByName(addressBookName);
 
         /* constructs a <code>AddressBookInfoDataTableModel</code> object */
-        int rowCount = (addressBookInfoList == null)? 0 : addressBookInfoList.size();
+        int rowCount = (addressBookInfoList == null)? AddressBookInfoDataTable.ROW_COUNT : addressBookInfoList.size();
         int columnCount = AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES.length;
         dataTableModel = new AddressBookInfoDataTableModel(addressBookInfoList, AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES,
                 rowCount, columnCount);
 
-        /* displayes returned results to the table in user interface */
+        /* display returned results to the table in user interface */
         addressBookInfoDataTable.setModel(dataTableModel);
         nameTextField.requestFocusInWindow();
     }
@@ -77,7 +75,7 @@ public class AddressBookInfoMediator {
      */
     public void clearDisplayedData() {
         int columnCount = AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES.length;
-        dataTableModel = new AddressBookInfoDataTableModel(new ArrayList(),
+        dataTableModel = new AddressBookInfoDataTableModel(new ArrayList<>(),
                 AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES,
                 AddressBookInfoDataTable.ROW_COUNT, columnCount);
 
@@ -112,7 +110,7 @@ public class AddressBookInfoMediator {
         if (rowNumbers.length == 0) {
             JOptionPane.showMessageDialog(null, "Please select a row in a table!");
         } else {
-            List<AddressBookInfo> dataModelList = dataTableModel.getList();
+            List<AddressBookInfo> dataModelList = (List<AddressBookInfo>)dataTableModel.getList();
             Arrays.stream(rowNumbers)
                     .forEach(rowNumber -> selectedAddressBookInfoIdList.add(dataModelList.get(rowNumber).getId()));
 
@@ -184,10 +182,10 @@ public class AddressBookInfoMediator {
      */
     public void removeAddressBook() {
         List<AddressBookInfo> selectedAddressBookInfoList = new ArrayList<>();
-        List<AddressBookInfo> successfullyRemovedAddressBookInfoList = new ArrayList<>();
+        List<AddressBookInfo> successfullyRemovedAddressBookInfoList = new ArrayList();
 
         int[] rowNumbers = addressBookInfoDataTable.getSelectedRows();
-        List<AddressBookInfo> dataModelList = dataTableModel.getList();
+        List<AddressBookInfo> dataModelList = (List<AddressBookInfo>)dataTableModel.getList();
 
         if (rowNumbers.length == 0) {
             JOptionPane.showMessageDialog(null, "Please select a row in a table!");
@@ -196,11 +194,11 @@ public class AddressBookInfoMediator {
                     .forEach(rowNumber -> selectedAddressBookInfoList.add(dataModelList.get(rowNumber)));
 
             // remove address book info item from the UI and data store
-            selectedAddressBookInfoList.stream()
+            selectedAddressBookInfoList
                     .forEach(info -> {
                         dataModelList.remove(info);
                         Optional<AddressBookInfo> removedAddressBookInfo = addressBookInfoService.removeAddressBookInfo(info);
-                        removedAddressBookInfo.ifPresent(i -> successfullyRemovedAddressBookInfoList.add(i));
+                        removedAddressBookInfo.ifPresent(successfullyRemovedAddressBookInfoList::add);
                     });
 
             int rowCount = (dataModelList == null)? 0 : dataModelList.size();

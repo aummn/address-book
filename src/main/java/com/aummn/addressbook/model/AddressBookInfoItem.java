@@ -9,7 +9,7 @@ package com.aummn.addressbook.model;
  */
 public class AddressBookInfoItem {
 
-    private long id = 0;
+    private long id;
     private String name;
 
     public AddressBookInfoItem(AddressBookInfo info) {

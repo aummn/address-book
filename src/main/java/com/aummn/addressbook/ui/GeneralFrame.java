@@ -17,7 +17,7 @@ public class GeneralFrame extends JFrame {
     /**
      * Creates a new <code>GeneralFrame</code> with the specified title.
      * This frame is attached with a <code>WindowCloser</code> which will
-     * realese system resources associated with the frame when detecting
+     * relese system resources associated with the frame when detecting
      * closing of that frame.
      *
      * @param title a <code>String</code> will be displayed on the title bar of

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 /**
@@ -57,7 +56,7 @@ public class AddressBookMediator {
         dataTableModel = new AddressBookDataTableModel(contactList, AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES,
                 rowCount, columnCount);
 
-        /* displayes returned results to the table in user interface */
+        /* display returned results to the table in user interface */
         addressBookDataTable.setModel(dataTableModel);
         contactNameTextField.requestFocusInWindow();
     }
@@ -67,13 +66,13 @@ public class AddressBookMediator {
      *
      */
     public void showContact() {
-        List<AddressBookInfoItem> selectedAddressBookInfoList = addressBookDataList.getSelectedValuesList();
+        List<AddressBookInfoItem> selectedAddressBookInfoList = (List<AddressBookInfoItem>)addressBookDataList.getSelectedValuesList();
         int[] rowNumbers = addressBookDataList.getSelectedIndices();
         if (selectedAddressBookInfoList == null || selectedAddressBookInfoList.size() < 1) {
             JOptionPane.showMessageDialog(null, "Please select an address book!");
         } else {
             List<Long> selectedAddressBookInfoIdList = new ArrayList<>();
-            selectedAddressBookInfoList.stream()
+            selectedAddressBookInfoList
                     .forEach(item -> selectedAddressBookInfoIdList.add(item.getId()));
 
             this.showContact(selectedAddressBookInfoIdList, rowNumbers);
@@ -95,7 +94,7 @@ public class AddressBookMediator {
         dataTableModel = new AddressBookDataTableModel(contactList, AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES,
                 rowCount, columnCount);
 
-        /* displayes returned results to the table in user interface */
+        /* display returned results to the table in user interface */
         addressBookDataTable.setModel(dataTableModel);
         addressBookDataList.setSelectedIndices(rowNumbers);
         contactNameTextField.setText("");
@@ -107,13 +106,13 @@ public class AddressBookMediator {
      *
      */
     public void showUniqueContact() {
-        List<AddressBookInfoItem> selectedAddressBookInfoList = addressBookDataList.getSelectedValuesList();
+        List<AddressBookInfoItem> selectedAddressBookInfoList = (List<AddressBookInfoItem>)addressBookDataList.getSelectedValuesList();
         int[] rowNumbers = addressBookDataList.getSelectedIndices();
         if (selectedAddressBookInfoList == null || selectedAddressBookInfoList.size() < 1) {
             JOptionPane.showMessageDialog(null, "Please select an address book!");
         } else {
             List<Long> selectedAddressBookInfoIdList = new ArrayList<>();
-            selectedAddressBookInfoList.stream()
+            selectedAddressBookInfoList
                     .forEach(item -> selectedAddressBookInfoIdList.add(item.getId()));
 
             this.showUniqueContact(selectedAddressBookInfoIdList, rowNumbers);
@@ -135,7 +134,7 @@ public class AddressBookMediator {
         dataTableModel = new AddressBookDataTableModel(contactList, AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES,
                 rowCount, columnCount);
 
-        /* displayes returned results to the table in user interface */
+        /* display returned results to the table in user interface */
         addressBookDataTable.setModel(dataTableModel);
         addressBookDataList.setSelectedIndices(rowNumbers);
         contactNameTextField.setText("");
@@ -201,7 +200,7 @@ public class AddressBookMediator {
         List<Contact> selectedContactList = new ArrayList<>();
         List<Contact> successfullyRemovedContactList = new ArrayList<>();
         int[] rowNumbers = addressBookDataTable.getSelectedRows();
-        List<Contact> dataModelList = dataTableModel.getList();
+        List<Contact> dataModelList = (List<Contact>)dataTableModel.getList();
 
         if (rowNumbers.length == 0) {
             JOptionPane.showMessageDialog(null, "Please select a row in a table!");
@@ -211,11 +210,11 @@ public class AddressBookMediator {
                     .forEach(rowNumber -> selectedContactList.add(dataModelList.get(rowNumber)));
 
             // remove contacts from the ui and data store
-            selectedContactList.stream()
+            selectedContactList
                     .forEach(contact -> {
                         dataModelList.remove(contact);
                         Optional<Contact> removedContact = addressBookService.removeContact(contact);
-                        removedContact.ifPresent(i -> successfullyRemovedContactList.add(i));
+                        removedContact.ifPresent(successfullyRemovedContactList::add);
                     });
 
             // refresh the data table to reflect changes
@@ -239,9 +238,7 @@ public class AddressBookMediator {
     public void updateAddressBookDataList() {
         if(this.addressBookDialog != null) {
             Object[] data = this.getAddressBookInfoMediator().searchAddressBook(null).stream()
-                    .map(r -> new AddressBookInfoItem(r))
-                    .collect(Collectors.toList())
-                    .toArray();
+                    .map(AddressBookInfoItem::new).toArray();
             this.getAddressBookDataList().setListData(data);
         }
     }

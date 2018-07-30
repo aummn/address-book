@@ -21,26 +21,11 @@ import java.awt.event.KeyEvent;
  * @since 1.0
  */
 public class AddressBookInfoFrame extends GeneralFrame {
-
-    /**
-     * a <code>JTextField</code> object used to accept address book name input
-     */
-    private NameTextField nameTextField;
     
     /**
      * An object used to communicate with all user interface elements on address book info frame
      */
     private AddressBookInfoMediator addressBookInfoMediator;
-
-    /**
-     * An object used to communicate with all user interface elements on address book dialog
-     */
-    private AddressBookMediator addressBookMediator;
-    
-    /**
-     * a table model to store address book data
-     */
-    private AddressBookInfoDataTableModel addressBookInfoDataTableModel;
     
     
     /**
@@ -52,8 +37,7 @@ public class AddressBookInfoFrame extends GeneralFrame {
     public AddressBookInfoFrame(String title) {
         super(title);
         this.addressBookInfoMediator = new AddressBookInfoMediator();
-        this.addressBookMediator = new AddressBookMediator(this.addressBookInfoMediator);
-        this.addressBookInfoMediator.setAddressBookMediator(this.addressBookMediator);
+        this.addressBookInfoMediator.setAddressBookMediator(new AddressBookMediator(this.addressBookInfoMediator));
         setupGUI();
     }
     
@@ -66,54 +50,54 @@ public class AddressBookInfoFrame extends GeneralFrame {
 
         AddressBookAddCommand addressBookAddCommand = new AddressBookAddCommand(addressBookInfoMediator);
         AddressBookAddAction addressBookAddAction = new AddressBookAddAction("Add Address Book", null,
-        "add an address book", new Integer(KeyEvent.VK_A), null);
+        "add an address book", KeyEvent.VK_A, null);
         addressBookAddAction.setCommand(addressBookAddCommand);
 
         AddressBookRemoveCommand addressBookRemoveCommand = new AddressBookRemoveCommand(addressBookInfoMediator);
         AddressBookRemoveAction addressBookRemoveAction = new AddressBookRemoveAction("Remove Address Book", null,
-                "remove address books", new Integer(KeyEvent.VK_R), null);
+                "remove address books", KeyEvent.VK_R, null);
         addressBookRemoveAction.setCommand(addressBookRemoveCommand);
 
 
         AddressBookShowContactCommand showContactCommand = new AddressBookShowContactCommand(addressBookInfoMediator);
         ShowContactAction showContactAction = new ShowContactAction("Show Contacts", null,
-                "show contacts in an address book", new Integer(KeyEvent.VK_C), null);
+                "show contacts in an address book", KeyEvent.VK_C, null);
         showContactAction.setCommand(showContactCommand);
 
         AddressBookShowUniqueContactCommand showUniqueContactCommand = new AddressBookShowUniqueContactCommand(addressBookInfoMediator);
         ShowUniqueContactAction showUniqueContactAction = new ShowUniqueContactAction("Show Unique Contacts", null,
-                "show unique contacts in multiple address books", new Integer(KeyEvent.VK_U), null);
+                "show unique contacts in multiple address books", KeyEvent.VK_U, null);
         showUniqueContactAction.setCommand(showUniqueContactCommand);
         
         ClearCommand clearCommand = new ClearCommand(addressBookInfoMediator);
         ClearAction clearAction = new ClearAction("Clear", null,
-        "clears displayed data on screen", new Integer(KeyEvent.VK_E), null);
+        "clears displayed data on screen", KeyEvent.VK_E, null);
         clearAction.setCommand(clearCommand);
 
         AddressBookSearchCommand addressBookSearchCommand = new AddressBookSearchCommand(addressBookInfoMediator);
         AddressBookSearchAction addressBookSearchAction = new AddressBookSearchAction("Search", null,
-        "search address books", new Integer(KeyEvent.VK_S), null);
+        "search address books", KeyEvent.VK_S, null);
 
         addressBookSearchAction.setCommand(addressBookSearchCommand);
 
 
         AddressBookContactManagementCommand addressBookContactManagementCommand = new AddressBookContactManagementCommand(addressBookInfoMediator);
         AddressBookContactManagementAction addressBookContactManagementAction = new AddressBookContactManagementAction("Contact Management", null,
-                "go to contact management window", new Integer(KeyEvent.VK_M), null);
+                "go to contact management window", KeyEvent.VK_M, null);
 
         addressBookContactManagementAction.setCommand(addressBookContactManagementCommand);
 
         /* sets up display elements */
         AddressBookInfoDataTable addressBookDataTable = new AddressBookInfoDataTable(addressBookInfoMediator);
-            
-        addressBookInfoDataTableModel = new AddressBookInfoDataTableModel(null,
+
+        AddressBookInfoDataTableModel addressBookInfoDataTableModel = new AddressBookInfoDataTableModel(null,
                     AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES,
                     AddressBookInfoDataTable.ROW_COUNT,
                     AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES.length);
 
         addressBookDataTable.setModel(addressBookInfoDataTableModel);
-        
-        nameTextField = new NameTextField(addressBookInfoMediator);
+
+        NameTextField nameTextField = new NameTextField(addressBookInfoMediator);
         nameTextField.setColumns(20);
         AddressBookNameKeyListener addressBookNameKeyListener = new AddressBookNameKeyListener(addressBookInfoMediator);
         nameTextField.addKeyListener(addressBookNameKeyListener);

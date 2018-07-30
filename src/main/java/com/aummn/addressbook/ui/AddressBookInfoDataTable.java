@@ -17,13 +17,6 @@ public class AddressBookInfoDataTable extends JTable {
     public static final int ROW_COUNT = 20;
 
     /**
-     * An object used to communicate with all user interface elements.
-     * Every user interface element registers with it and
-     * delegates operations to it.
-     */
-    private AddressBookInfoMediator addressBookInfoMediator;
-
-    /**
      * Creates a <code>AddressBookInfoDataTable</code> object and
      * registers itself with the <code>AddressBookInfoMediator</code>.
      *
@@ -31,9 +24,8 @@ public class AddressBookInfoDataTable extends JTable {
      * all user interface elements
      */
     public AddressBookInfoDataTable(AddressBookInfoMediator addressBookInfoMediator) {
-        
-        this.addressBookInfoMediator = addressBookInfoMediator;
-        this.addressBookInfoMediator.registerAddressBookInfoDataTable(this);
+
+        addressBookInfoMediator.registerAddressBookInfoDataTable(this);
         
     }
     

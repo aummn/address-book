@@ -14,13 +14,6 @@ import javax.swing.*;
 public class ContactNameTextField extends JTextField {
 
     /**
-     * An object used to communicate with all user interface elements.
-     * Every user interface element registers with it and
-     * delegates operations to it.
-     */
-    private AddressBookMediator addressBookMediator;
-
-    /**
      * Creates a <code>ContactNameTextField</code> object and
      * registers itself with the <code>AddressBookMediator</code>.
      *
@@ -28,8 +21,7 @@ public class ContactNameTextField extends JTextField {
      * all user interface elements
      */
     public ContactNameTextField(AddressBookMediator addressBookMediator) {
-        
-        this.addressBookMediator = addressBookMediator;
+
         addressBookMediator.registerContactNameTextField(this);
         
     }

@@ -37,17 +37,13 @@ public class AddressBookServiceImpl implements AddressBookService {
 
     public Optional<Contact> removeContact(Contact contact) {
         if(contact == null) throw new IllegalArgumentException("contact is required");
-        return repo.removeRecord(contact.getId())
-                .map(r -> Optional.of(new Contact(r.getId(), r.getName(), r.getPhone())))
-                .orElse(Optional.empty());
+        return repo.removeRecord(contact.getId()).map(r -> new Contact(r.getId(), r.getName(), r.getPhone()));
 
     }
 
     public Optional<Contact> findContact(Contact contact) {
         if(contact == null) throw new IllegalArgumentException("contact is required");
-        return repo.findRecordById(contact.getId())
-                .map(r -> Optional.of(new Contact(r.getId(), r.getName(), r.getPhone())))
-                .orElse(Optional.empty());
+        return repo.findRecordById(contact.getId()).map(r -> new Contact(r.getId(), r.getName(), r.getPhone()));
     }
 
     public List<Contact> findContact(String searchString) {

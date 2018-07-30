@@ -33,9 +33,7 @@ public class AddressBookInfoServiceImpl implements AddressBookInfoService {
 
     public Optional<AddressBookInfo> removeAddressBookInfo(AddressBookInfo info) {
         if(info == null) throw new IllegalArgumentException("address book info is required");
-        return repo.removeAddressBookInfo(info.getId())
-                .map(r -> Optional.of(new AddressBookInfo(r.getId(), r.getName())))
-                .orElse(Optional.empty());
+        return repo.removeAddressBookInfo(info.getId()).map(r -> new AddressBookInfo(r.getId(), r.getName()));
     }
 
     public List<AddressBookInfo> findAddressBookInfoByName(String name) {

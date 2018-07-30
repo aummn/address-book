@@ -61,7 +61,7 @@ public class CommandAction extends AbstractAction implements CommandHolder {
     /**
      * stores a value in a constant in Action
      *
-     * @param key one of constans of <code>Action</code>
+     * @param key one of constants of <code>Action</code>
      * @param value an <code>Object</code> added to <code>Action</code>
      */
     public void putValue(String key, Object value) {

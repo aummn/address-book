@@ -1,10 +1,8 @@
 package com.aummn.addressbook.repo;
 
 import com.aummn.addressbook.model.AddressBookRecord;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class AddressBookRepositoryImpl implements AddressBookRepository {
 
-    private Map<Long, AddressBookRecord> addressBookMap = new HashMap();
+    private Map<Long, AddressBookRecord> addressBookMap = new HashMap<>();
     private AtomicLong keyGenerator = new AtomicLong(0);
 
     public AddressBookRepositoryImpl() {}
@@ -39,12 +37,10 @@ public class AddressBookRepositoryImpl implements AddressBookRepository {
 
     public List<AddressBookRecord> findRecord(String searchString) {
         return addressBookMap.entrySet().stream()
-                .filter(entry -> {
-                    return String.valueOf(entry.getValue().getId()).contains(searchString) ||
-                            entry.getValue().getName().contains(searchString) ||
-                            entry.getValue().getPhone().contains(searchString);
-                })
-                .map(entry -> entry.getValue())
+                .filter(entry -> String.valueOf(entry.getValue().getId()).contains(searchString) ||
+                        entry.getValue().getName().contains(searchString) ||
+                        entry.getValue().getPhone().contains(searchString))
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
@@ -52,15 +48,15 @@ public class AddressBookRepositoryImpl implements AddressBookRepository {
     public List<AddressBookRecord> findAllRecordsByAbid(long addressBookId) {
         return addressBookMap.entrySet().stream()
                 .filter(entry -> entry.getValue().getAbid() == addressBookId)
-                .map(entry -> entry.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
     public List<AddressBookRecord> findAllRecordsByAbids(List<Long> addressBookIds) {
         if(addressBookIds == null) throw new IllegalArgumentException("addressBook Ids is required");
         return addressBookIds.stream()
-                .map(addressBookId -> this.findAllRecordsByAbid(addressBookId))
-                .flatMap(addressBookRecord -> addressBookRecord.stream())
+                .map(this::findAllRecordsByAbid)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 }

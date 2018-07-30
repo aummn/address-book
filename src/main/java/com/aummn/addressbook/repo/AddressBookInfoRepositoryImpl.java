@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class AddressBookInfoRepositoryImpl implements AddressBookInfoRepository {
 
     // the address book data store
-    private Map<Long, AddressBookInfoRecord> addressBookInfoMap = new HashMap();
+    private Map<Long, AddressBookInfoRecord> addressBookInfoMap = new HashMap<>();
 
     // the ID generator for address books
     private AtomicLong keyGenerator = new AtomicLong(0);
@@ -45,7 +45,7 @@ public class AddressBookInfoRepositoryImpl implements AddressBookInfoRepository 
         if(name == null) throw new IllegalArgumentException("name is required");
         return addressBookInfoMap.entrySet().stream()
                 .filter(entry -> entry.getValue().getName().contains(name))
-                .map(entry -> entry.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +55,7 @@ public class AddressBookInfoRepositoryImpl implements AddressBookInfoRepository 
 
     public List<AddressBookInfoRecord> findAllAddressBookInfo() {
         return addressBookInfoMap.entrySet().stream()
-                .map(entry -> entry.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 }

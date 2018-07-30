@@ -57,7 +57,7 @@ public class AddressBookServiceImplTest {
     public void addOneEmptyContactToSingleAddressBook_MissingContact() {
 
         assertThatThrownBy(() ->
-          { service.addContact(null, 1L); }).hasMessage("contact is required");
+                service.addContact(null, 1L)).hasMessage("contact is required");
     }
 
     @Test
@@ -91,7 +91,7 @@ public class AddressBookServiceImplTest {
     public void findContact_MissingContact() {
 
         assertThatThrownBy(() ->
-        { service.findContact((Contact)null); }).hasMessage("contact is required");
+                service.findContact((Contact)null)).hasMessage("contact is required");
     }
 
 
@@ -149,7 +149,7 @@ public class AddressBookServiceImplTest {
     public void removeContact_MissingContact() {
 
         assertThatThrownBy(() ->
-        { service.removeContact(null); }).hasMessage("contact is required");
+                service.removeContact(null)).hasMessage("contact is required");
     }
 
     @Test
@@ -204,7 +204,7 @@ public class AddressBookServiceImplTest {
         record3.setPhone("0402124587");
         record3.setAbid(1L);
 
-        when(repository.findAllRecordsByAbid(1L)).thenReturn(new ArrayList());
+        when(repository.findAllRecordsByAbid(1L)).thenReturn(new ArrayList<>());
         List<Contact> contacts = service.printContacts(1L);
         verify(repository, times(1)).findAllRecordsByAbid(1L);
         assertThat(contacts).isEmpty();
@@ -254,7 +254,7 @@ public class AddressBookServiceImplTest {
     public void printContacts_MultipleAddressBooks_MissingContacts() {
 
         assertThatThrownBy(() ->
-        { service.printContacts((List)null); }).hasMessage("addressBook Ids is required");
+                service.printContacts((List<Long>)null)).hasMessage("addressBook Ids is required");
     }
 
 
@@ -312,7 +312,7 @@ public class AddressBookServiceImplTest {
     public void printUniqueContacts_MultipleAddressBooks_MissingContacts() {
 
         assertThatThrownBy(() ->
-        { service.printUniqueContacts((List)null); }).hasMessage("addressBook Ids is required");
+                service.printUniqueContacts(null)).hasMessage("addressBook Ids is required");
     }
 
 }

@@ -30,21 +30,6 @@ public class AddressBookAddDialog extends JDialog {
     private JTextField addressBookNameTextField;
 
     /**
-     * a <code>Listener</code> for Add button
-     */
-    private AddressBookAddButtonListener addressBookAddButtonListener;
-
-    /**
-     * a <code>WindowDisposer</code> for Cancel button
-     */
-    private WindowDisposer cancelButtonListener;
-
-    /**
-     * a <code>KeyStroke</code> for buttons
-     */
-    private KeyStroke keyStroke;
-
-    /**
      * the communication manager class for UI elements interaction
      */
     private AddressBookInfoMediator addressBookInfoMediator;
@@ -74,18 +59,18 @@ public class AddressBookAddDialog extends JDialog {
         
         addressBookNameTextField = new JTextField(addressBookName);
         addressBookNameTextField.setColumns(16);
-        
-        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
+
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         
         JButton addressBookAddButton = new JButton("  Add  ");
         addressBookAddButton.setMnemonic(KeyEvent.VK_O);
-        addressBookAddButtonListener = new AddressBookAddButtonListener(this);
+        AddressBookAddButtonListener addressBookAddButtonListener = new AddressBookAddButtonListener(this);
         addressBookAddButton.addActionListener(addressBookAddButtonListener);
         addressBookAddButton.registerKeyboardAction(addressBookAddButtonListener, keyStroke, JComponent.WHEN_FOCUSED);
         
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setMnemonic(KeyEvent.VK_C);
-        cancelButtonListener = new WindowDisposer(this);
+        WindowDisposer cancelButtonListener = new WindowDisposer(this);
         cancelButton.addActionListener(cancelButtonListener);
         cancelButton.registerKeyboardAction(cancelButtonListener, keyStroke, JComponent.WHEN_FOCUSED);
 

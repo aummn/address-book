@@ -19,7 +19,7 @@ public class WindowCloser extends WindowAdapter {
     /**
      * Creates a new <code>WindowCloser</code>
      */
-    public WindowCloser() {};
+    public WindowCloser() {}
     
     /**
      * Closes a window. Invoked when a window is in the process of being closed.

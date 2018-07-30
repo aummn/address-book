@@ -40,7 +40,7 @@ public class AddressBookInfoRepositoryImplTest {
     public void saveAddressBookInfo_MissingRecord() {
 
         assertThatThrownBy(() ->
-        { repo.saveAddressBookInfo(null); }).hasMessage("record is required");
+                repo.saveAddressBookInfo(null)).hasMessage("record is required");
     }
 
     @Test
@@ -221,7 +221,7 @@ public class AddressBookInfoRepositoryImplTest {
     public void findAddressBookInfoByName_NullName() {
 
         assertThatThrownBy(() ->
-        { repo.findAddressBookInfoByName(null); }).hasMessage("name is required");
+                repo.findAddressBookInfoByName(null)).hasMessage("name is required");
     }
 
 

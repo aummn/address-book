@@ -49,21 +49,6 @@ public class ContactAddDialog extends JDialog {
     private JComboBox<AddressBookInfoItem> addressBookInfoJComboBox;
 
     /**
-     * a <code>Listener</code> for Add button
-     */
-    private ContactAddButtonListener contactAddButtonListener;
-
-    /**
-     * a <code>WindowDisposer</code> for Cancel button
-     */
-    private WindowDisposer cancelButtonListener;
-
-    /**
-     * a <code>KeyStroke</code> for buttons
-     */
-    private KeyStroke keyStroke;
-
-    /**
      * An object used to communicate with all user interface elements on address book dialog
      */
     private AddressBookMediator addressBookMediator;
@@ -109,22 +94,20 @@ public class ContactAddDialog extends JDialog {
         JLabel addressBookLabel = new JLabel("Address book: ");
         addressBookInfoJComboBox = new JComboBox<>();
 
-        addressBookInfoMediator.searchAddressBook(null).stream()
-                .forEach(r -> {
-                    addressBookInfoJComboBox.addItem(new AddressBookInfoItem(r));
-                });
+        addressBookInfoMediator.searchAddressBook(null)
+                .forEach(r -> addressBookInfoJComboBox.addItem(new AddressBookInfoItem(r)));
 
-        keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         
         JButton contactAddButton = new JButton("  Add  ");
         contactAddButton.setMnemonic(KeyEvent.VK_O);
-        contactAddButtonListener = new ContactAddButtonListener(this);
+        ContactAddButtonListener contactAddButtonListener = new ContactAddButtonListener(this);
         contactAddButton.addActionListener(contactAddButtonListener);
         contactAddButton.registerKeyboardAction(contactAddButtonListener, keyStroke, JComponent.WHEN_FOCUSED);
         
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setMnemonic(KeyEvent.VK_C);
-        cancelButtonListener = new WindowDisposer(this);
+        WindowDisposer cancelButtonListener = new WindowDisposer(this);
         cancelButton.addActionListener(cancelButtonListener);
         cancelButton.registerKeyboardAction(cancelButtonListener, keyStroke, JComponent.WHEN_FOCUSED);
 

@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.stream.Collectors;
 
 
 /**
@@ -24,21 +23,11 @@ import java.util.stream.Collectors;
 public class AddressBookDialog extends JDialog {
 
     /**
-     * a <code>JTextField</code> object used to accept contact name input
-     */
-    private ContactNameTextField contactNameTextField;
-
-    /**
      * An object used to communicate with all user interface elements.
      * Every user interface element registers with it and
      * delegates operations to it.
      */
     private AddressBookMediator addressBookMediator;
-
-    /**
-     * a table model based on a <code>List</code> object
-     */
-    private AddressBookDataTableModel dataTableModel;
 
     /**
      * Creates a <code>AddressBookDialog</code> object
@@ -65,59 +54,57 @@ public class AddressBookDialog extends JDialog {
         KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
         ContactAddCommand contactAddCommand = new ContactAddCommand(addressBookMediator);
         ContactAddAction contactAddAction = new ContactAddAction("Add", null,
-        "add a contact", new Integer(KeyEvent.VK_A), null);
+        "add a contact", KeyEvent.VK_A, null);
 
         contactAddAction.setCommand(contactAddCommand);
 
         ContactRemoveCommand contactRemoveCommand = new ContactRemoveCommand(addressBookMediator);
         ContactRemoveAction contactRemoveAction = new ContactRemoveAction("Remove", null,
-                "remove address books", new Integer(KeyEvent.VK_R), null);
+                "remove address books", KeyEvent.VK_R, null);
 
         contactRemoveAction.setCommand(contactRemoveCommand);
 
         
         ContactClearCommand contactClearCommand = new ContactClearCommand(addressBookMediator);
         ContactClearAction contactClearAction = new ContactClearAction("Clear", null,
-                "clears displayed data on screen", new Integer(KeyEvent.VK_E), null);
+                "clears displayed data on screen", KeyEvent.VK_E, null);
         contactClearAction.setCommand(contactClearCommand);
 
 
         ContactShowCommand contactShowCommand = new ContactShowCommand(addressBookMediator);
         ShowContactAction showContactAction = new ShowContactAction("Show Contacts", null,
-                "show contacts in an address book", new Integer(KeyEvent.VK_C), null);
+                "show contacts in an address book", KeyEvent.VK_C, null);
         showContactAction.setCommand(contactShowCommand);
 
         UniqueContactShowCommand uniqueContactShowCommand = new UniqueContactShowCommand(addressBookMediator);
         ShowUniqueContactAction showUniqueContactAction = new ShowUniqueContactAction("Show Unique Contacts", null,
-                "show unique contacts in multiple address books", new Integer(KeyEvent.VK_U), null);
+                "show unique contacts in multiple address books", KeyEvent.VK_U, null);
         showUniqueContactAction.setCommand(uniqueContactShowCommand);
 
         ContactSearchCommand contactSearchCommand = new ContactSearchCommand(addressBookMediator);
         ContactSearchAction contactSearchAction = new ContactSearchAction("Search", null,
-        "search contacts", new Integer(KeyEvent.VK_S), null);
+        "search contacts", KeyEvent.VK_S, null);
 
         contactSearchAction.setCommand(contactSearchCommand);
         
         /* sets up display elements */
         AddressBookDataTable addressBookDataTable = new AddressBookDataTable(addressBookMediator);
-            
-        dataTableModel = new AddressBookDataTableModel(null,
+
+        AddressBookDataTableModel dataTableModel = new AddressBookDataTableModel(null,
                 AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES,
                 AddressBookDataTable.ROW_COUNT,
                 AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES.length);
 
         addressBookDataTable.setModel(dataTableModel);
 
-        contactNameTextField = new ContactNameTextField(addressBookMediator);
+        ContactNameTextField contactNameTextField = new ContactNameTextField(addressBookMediator);
         contactNameTextField.setColumns(20);
         ContactNameKeyListener contactNameKeyListener = new ContactNameKeyListener(addressBookMediator);
         contactNameTextField.addKeyListener(contactNameKeyListener);
 
         JList addressBookDataList = new JList();
         Object[] data = this.addressBookMediator.getAddressBookInfoMediator().searchAddressBook(null).stream()
-                .map(r -> new AddressBookInfoItem(r))
-                .collect(Collectors.toList())
-                .toArray();
+                .map(AddressBookInfoItem::new).toArray();
         addressBookDataList.setListData(data);
         addressBookDataList.setVisibleRowCount(3);
 
@@ -210,10 +197,9 @@ public class AddressBookDialog extends JDialog {
         gridConstrainsForNorthPanel.gridwidth = 1;
         gridConstrainsForNorthPanel.anchor = GridBagConstraints.WEST;
         northPanel.add(showContactButton, gridConstrainsForNorthPanel);
-        gridConstrainsForNorthPanel.anchor = GridBagConstraints.CENTER;
 
-        gridConstrainsForNorthPanel.gridwidth = GridBagConstraints.REMAINDER;
         gridConstrainsForNorthPanel.anchor = GridBagConstraints.CENTER;
+        gridConstrainsForNorthPanel.gridwidth = GridBagConstraints.REMAINDER;
         northPanel.add(showUniqueContactButton, gridConstrainsForNorthPanel);
         gridConstrainsForNorthPanel.fill = GridBagConstraints.NONE;
 
@@ -257,7 +243,6 @@ public class AddressBookDialog extends JDialog {
         gridConstrainsForCenterInSouthPanel.anchor = GridBagConstraints.CENTER;
         centerInSouth.add(clearButton, gridConstrainsForCenterInSouthPanel);
         clearButton.setIcon(null);
-        gridConstrainsForCenterInSouthPanel.anchor = GridBagConstraints.CENTER;
 
         gridConstrainsForCenterInSouthPanel.gridx = 4;
         gridConstrainsForCenterInSouthPanel.anchor = GridBagConstraints.CENTER;
