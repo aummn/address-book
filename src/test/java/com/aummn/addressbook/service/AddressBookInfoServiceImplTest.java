@@ -54,26 +54,6 @@ public class AddressBookInfoServiceImplTest {
           { service.addAddressBookInfo(null); }).hasMessage("address book info is required");
     }
 
-
-    @Test
-    public void findAddressBookInfo() {
-        AddressBookInfo info = new AddressBookInfo();
-        info.setId(1L);
-        info.setName("vip");
-
-        when(repository.findAddressBookInfoById(1L))
-                .thenReturn(Optional.of(new AddressBookInfoRecord(1L, "vip")));
-        Optional<AddressBookInfo> infoOptional = service.findAddressBookInfo(1L);
-        assertThat(infoOptional).isNotEmpty().hasValue(info);
-    }
-
-    @Test
-    public void findAddressBookInfo_NonExistingAddressBookInfo() {
-        when(repository.findAddressBookInfoById(6L)).thenReturn(Optional.empty());
-        Optional<AddressBookInfo> infoOptional = service.findAddressBookInfo(6L);
-        assertThat(infoOptional).isEmpty();
-    }
-
     @Test
     public void removeAddressBookInfo() {
         AddressBookInfo info = new AddressBookInfo();
@@ -129,6 +109,79 @@ public class AddressBookInfoServiceImplTest {
         List<AddressBookInfo> savedInfo = service.findAllAddressBookInfo();
         verify(repository).findAllAddressBookInfo();
         assertThat(savedInfo).isEmpty();
+    }
+
+
+
+    @Test
+    public void findAddressBookInfoByName() {
+        AddressBookInfoRecord outputRecord1 = new AddressBookInfoRecord();
+        outputRecord1.setId(1L);
+        outputRecord1.setName("vip");
+
+        AddressBookInfoRecord outputRecord2 = new AddressBookInfoRecord();
+        outputRecord2.setId(2L);
+        outputRecord2.setName("melbourne");
+
+        AddressBookInfoRecord outputRecord3 = new AddressBookInfoRecord();
+        outputRecord3.setId(3L);
+        outputRecord3.setName("sydney");
+
+        when(repository.findAddressBookInfoByName("ne"))
+                .thenReturn(Arrays.asList(outputRecord2, outputRecord3));
+        List<AddressBookInfo> savedInfo = service.findAddressBookInfoByName("ne");
+        verify(repository).findAddressBookInfoByName("ne");
+
+        assertThat(savedInfo).isNotEmpty().hasSize(2).extracting("id", "name")
+                .contains(tuple(2L, "melbourne"),
+                        tuple(3L, "sydney"));
+    }
+
+    @Test
+    public void findAddressBookInfoByName_NoMatchingRecord() {
+        AddressBookInfoRecord outputRecord1 = new AddressBookInfoRecord();
+        outputRecord1.setId(1L);
+        outputRecord1.setName("vip");
+
+        AddressBookInfoRecord outputRecord2 = new AddressBookInfoRecord();
+        outputRecord2.setId(2L);
+        outputRecord2.setName("melbourne");
+
+        AddressBookInfoRecord outputRecord3 = new AddressBookInfoRecord();
+        outputRecord3.setId(3L);
+        outputRecord3.setName("sydney");
+
+        when(repository.findAddressBookInfoByName("ne"))
+                .thenReturn(new ArrayList<>());
+        List<AddressBookInfo> savedInfo = service.findAddressBookInfoByName("ne");
+        verify(repository).findAddressBookInfoByName("ne");
+
+        assertThat(savedInfo).isEmpty();
+    }
+
+    @Test
+    public void findAddressBookInfoByName_NameIsNull() {
+        AddressBookInfoRecord outputRecord1 = new AddressBookInfoRecord();
+        outputRecord1.setId(1L);
+        outputRecord1.setName("vip");
+
+        AddressBookInfoRecord outputRecord2 = new AddressBookInfoRecord();
+        outputRecord2.setId(2L);
+        outputRecord2.setName("melbourne");
+
+        AddressBookInfoRecord outputRecord3 = new AddressBookInfoRecord();
+        outputRecord3.setId(3L);
+        outputRecord3.setName("sydney");
+
+        when(repository.findAddressBookInfoByName(""))
+                .thenReturn(Arrays.asList(outputRecord1, outputRecord2, outputRecord3));
+        List<AddressBookInfo> savedInfo = service.findAddressBookInfoByName(null);
+        verify(repository).findAddressBookInfoByName("");
+
+        assertThat(savedInfo).isNotEmpty().hasSize(3).extracting("id", "name")
+                .contains(tuple(1L, "vip"),
+                        tuple(2L, "melbourne"),
+                        tuple(3L, "sydney"));
     }
 
 }

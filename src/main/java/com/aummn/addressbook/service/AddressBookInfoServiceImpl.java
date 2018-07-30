@@ -2,6 +2,7 @@ package com.aummn.addressbook.service;
 
 import com.aummn.addressbook.model.AddressBookInfo;
 import com.aummn.addressbook.model.AddressBookInfoRecord;
+import com.aummn.addressbook.repo.AddressBookInfoRepository;
 import com.aummn.addressbook.repo.AddressBookInfoRepositoryImpl;
 
 import java.util.List;
@@ -17,10 +18,10 @@ import java.util.stream.Collectors;
  */
 public class AddressBookInfoServiceImpl implements AddressBookInfoService {
 
-    private AddressBookInfoRepositoryImpl repo = null;
+    private AddressBookInfoRepository repo;
 
-    public AddressBookInfoServiceImpl(AddressBookInfoRepositoryImpl repo) {
-        this.repo = repo;
+    public AddressBookInfoServiceImpl() {
+        this.repo = new AddressBookInfoRepositoryImpl();
     }
 
     public AddressBookInfo addAddressBookInfo(AddressBookInfo info) {
@@ -37,11 +38,13 @@ public class AddressBookInfoServiceImpl implements AddressBookInfoService {
                 .orElse(Optional.empty());
     }
 
-    public Optional<AddressBookInfo> findAddressBookInfo(long id) {
-        return repo.findAddressBookInfoById(id)
-                .map(r -> Optional.of(new AddressBookInfo(r.getId(), r.getName())))
-                .orElse(Optional.empty());
+    public List<AddressBookInfo> findAddressBookInfoByName(String name) {
+        if (name == null) name = "";
+        return repo.findAddressBookInfoByName(name).stream()
+                .map(r -> new AddressBookInfo(r.getId(), r.getName()))
+                .collect(Collectors.toList());
     }
+
 
     public List<AddressBookInfo> findAllAddressBookInfo() {
         return repo.findAllAddressBookInfo().stream()
