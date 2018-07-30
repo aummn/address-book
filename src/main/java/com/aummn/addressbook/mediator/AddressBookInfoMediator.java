@@ -49,7 +49,7 @@ public class AddressBookInfoMediator {
         List<AddressBookInfo> addressBookInfoList = addressBookInfoService.findAddressBookInfoByName(addressBookName);
 
         /* constructs a <code>AddressBookInfoDataTableModel</code> object */
-        int rowCount = (addressBookInfoList == null)? AddressBookInfoDataTable.ROW_COUNT : addressBookInfoList.size();
+        int rowCount = addressBookInfoList.size();
         int columnCount = AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES.length;
         dataTableModel = new AddressBookInfoDataTableModel(addressBookInfoList, AddressBookInfoDataTable.ADDRESS_BOOK_INFO_RECORD_FIELD_NAMES,
                 rowCount, columnCount);

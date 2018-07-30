@@ -50,7 +50,7 @@ public class AddressBookMediator {
 
         String contactName = contactNameTextField.getText().trim();
         List<Contact> contactList = addressBookService.findContact(contactName);
-        int rowCount = (contactList == null)? 0 : contactList.size();
+        int rowCount = contactList.size();
         int columnCount = AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES.length;
 
         dataTableModel = new AddressBookDataTableModel(contactList, AddressBookDataTable.ADDRESS_BOOK_RECORD_FIELD_NAMES,
