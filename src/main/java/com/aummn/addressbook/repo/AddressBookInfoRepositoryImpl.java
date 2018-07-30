@@ -17,14 +17,17 @@ import java.util.stream.Collectors;
  */
 public class AddressBookInfoRepositoryImpl implements AddressBookInfoRepository {
 
+    // the address book data store
     private Map<Long, AddressBookInfoRecord> addressBookInfoMap = new HashMap();
-    private AtomicLong keyGenerator = new AtomicLong(1);
+
+    // the ID generator for address books
+    private AtomicLong keyGenerator = new AtomicLong(0);
 
     public AddressBookInfoRepositoryImpl() {}
 
     public AddressBookInfoRecord saveAddressBookInfo(AddressBookInfoRecord record) {
         if(record == null) throw new IllegalArgumentException("record is required");
-        Long key = keyGenerator.getAndIncrement();
+        Long key = keyGenerator.incrementAndGet();
         record.setId(key);
         addressBookInfoMap.put(key, record);
         return record;
@@ -36,6 +39,14 @@ public class AddressBookInfoRepositoryImpl implements AddressBookInfoRepository 
 
     public Optional<AddressBookInfoRecord> findAddressBookInfoById(long id) {
         return Optional.ofNullable(addressBookInfoMap.get(id));
+    }
+
+    public List<AddressBookInfoRecord> findAddressBookInfoByName(String name) {
+        if(name == null) throw new IllegalArgumentException("name is required");
+        return addressBookInfoMap.entrySet().stream()
+                .filter(entry -> entry.getValue().getName().contains(name))
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
     }
 
     public boolean existsById(long id) {

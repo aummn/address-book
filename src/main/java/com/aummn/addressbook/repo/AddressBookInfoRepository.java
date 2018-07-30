@@ -1,7 +1,6 @@
 package com.aummn.addressbook.repo;
 
 import com.aummn.addressbook.model.AddressBookInfoRecord;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +36,15 @@ public interface AddressBookInfoRepository {
      * @return an Optional<AddressBookInfoRecord> object
      */
     Optional<AddressBookInfoRecord> findAddressBookInfoById(long id);
+
+    /**
+     * Find address book info. matching the specified name
+     *
+     * @param name the name of address book info
+     * @return an list of AddressBookInfoRecord object
+     *
+     */
+    List<AddressBookInfoRecord> findAddressBookInfoByName(String name);
 
     /**
      * Whether an address book info record exists.

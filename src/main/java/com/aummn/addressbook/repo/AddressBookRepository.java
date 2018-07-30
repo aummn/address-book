@@ -22,28 +22,12 @@ public interface AddressBookRepository {
     AddressBookRecord saveRecord(AddressBookRecord record);
 
     /**
-     * Insert a list of records into an address book.
-     *
-     * @param records the address book entries
-     * @return a list of AddressBookRecord objects
-     */
-    List<AddressBookRecord> saveRecords(List<AddressBookRecord> records);
-
-    /**
      * Remove a record.
      *
      * @param id the id of an address book entry
      *
      */
-    void removeRecord(Long id);
-
-    /**
-     * Remove a list of records.
-     *
-     * @param ids the ids of address book entries
-     *
-     */
-    void removeRecords(List<Long> ids);
+    Optional<AddressBookRecord> removeRecord(long id);
 
     /**
      * Find an address book entry by id.
@@ -52,6 +36,14 @@ public interface AddressBookRepository {
      *
      */
     Optional<AddressBookRecord> findRecordById(Long id);
+
+    /**
+     * Find a list of an address book entries by id, or name, or phone
+     *
+     * @param searchString the string containing id, or name, or phone
+     *
+     */
+    List<AddressBookRecord> findRecord(String searchString);
 
     /**
      * Find all records from an address book.

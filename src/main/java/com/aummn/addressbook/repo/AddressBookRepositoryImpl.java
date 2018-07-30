@@ -18,37 +18,36 @@ import java.util.stream.Collectors;
 public class AddressBookRepositoryImpl implements AddressBookRepository {
 
     private Map<Long, AddressBookRecord> addressBookMap = new HashMap();
-    private AtomicLong keyGenerator = new AtomicLong(1);
+    private AtomicLong keyGenerator = new AtomicLong(0);
 
     public AddressBookRepositoryImpl() {}
 
     public AddressBookRecord saveRecord(AddressBookRecord record) {
-        Long key = keyGenerator.getAndIncrement();
+        Long key = keyGenerator.incrementAndGet();
         record.setId(key);
         addressBookMap.put(key, record);
         return record;
     }
 
-    public List<AddressBookRecord> saveRecords(List<AddressBookRecord> records) {
-        if(records == null) throw new IllegalArgumentException("records is required");
-        return records.stream()
-                .map(record -> this.saveRecord(record)).collect(Collectors.toList());
-    }
-
-    public void removeRecord(Long id) {
-        addressBookMap.remove(id);
-    }
-
-    public void removeRecords(List<Long> ids) {
-        if(ids == null) throw new IllegalArgumentException("ids is required");
-        for(Long id: ids) {
-            addressBookMap.remove(id);
-        }
+    public Optional<AddressBookRecord> removeRecord(long id) {
+        return Optional.ofNullable(addressBookMap.remove(id));
     }
 
     public Optional<AddressBookRecord> findRecordById(Long id) {
         return Optional.ofNullable(addressBookMap.get(id));
     }
+
+    public List<AddressBookRecord> findRecord(String searchString) {
+        return addressBookMap.entrySet().stream()
+                .filter(entry -> {
+                    return String.valueOf(entry.getValue().getId()).contains(searchString) ||
+                            entry.getValue().getName().contains(searchString) ||
+                            entry.getValue().getPhone().contains(searchString);
+                })
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
+    }
+
 
     public List<AddressBookRecord> findAllRecordsByAbid(long addressBookId) {
         return addressBookMap.entrySet().stream()
@@ -58,13 +57,10 @@ public class AddressBookRepositoryImpl implements AddressBookRepository {
     }
 
     public List<AddressBookRecord> findAllRecordsByAbids(List<Long> addressBookIds) {
-        if(addressBookIds == null) throw new IllegalArgumentException("addressBookIds is required");
+        if(addressBookIds == null) throw new IllegalArgumentException("addressBook Ids is required");
         return addressBookIds.stream()
                 .map(addressBookId -> this.findAllRecordsByAbid(addressBookId))
                 .flatMap(addressBookRecord -> addressBookRecord.stream())
                 .collect(Collectors.toList());
     }
-
-
-
 }

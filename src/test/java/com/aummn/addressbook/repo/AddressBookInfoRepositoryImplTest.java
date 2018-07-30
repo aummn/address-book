@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.assertj.core.api.Assertions.*;
 
 public class AddressBookInfoRepositoryImplTest {
-    private AtomicLong keyGenerator = null;
-    private AddressBookInfoRepositoryImpl repo;
+    private AtomicLong keyGenerator;
+    private AddressBookInfoRepository repo;
 
     @Before
     public void runBeforeEveryTest() {
@@ -30,9 +30,9 @@ public class AddressBookInfoRepositoryImplTest {
     @Test
     public void saveAddressBookInfo()
     {
-        Long key = keyGenerator.getAndIncrement();
-        AddressBookInfoRecord record = new AddressBookInfoRecord(key, "vip");
-        AddressBookInfoRecord savedRecord = repo.saveAddressBookInfo(record);
+        AddressBookInfoRecord record = new AddressBookInfoRecord(1, "vip");
+        AddressBookInfoRecord inputRecord = new AddressBookInfoRecord(6, "vip");
+        AddressBookInfoRecord savedRecord = repo.saveAddressBookInfo(inputRecord);
         assertThat(savedRecord).isEqualTo(record);
     }
 
@@ -145,5 +145,84 @@ public class AddressBookInfoRepositoryImplTest {
         List<AddressBookInfoRecord> records = repo.findAllAddressBookInfo();
         assertThat(records).isEmpty();
     }
+
+
+    @Test
+    public void findAddressBookInfoByName_PartialMatch() {
+        Long key = keyGenerator.get();
+        AddressBookInfoRecord record1 = new AddressBookInfoRecord(key, "vip");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record2 = new AddressBookInfoRecord(key, "melbourne");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record3 = new AddressBookInfoRecord(key, "sydney");
+        repo.saveAddressBookInfo(record1);
+        repo.saveAddressBookInfo(record2);
+        repo.saveAddressBookInfo(record3);
+
+        List<AddressBookInfoRecord> records = repo.findAddressBookInfoByName("ne");
+        assertThat(records).isNotEmpty().hasSize(2).extracting("id", "name")
+                .contains(tuple(2L, "melbourne"),
+                        tuple(3L, "sydney"));
+    }
+
+    @Test
+    public void findAddressBookInfoByName_ExactMatch() {
+        Long key = keyGenerator.get();
+        AddressBookInfoRecord record1 = new AddressBookInfoRecord(key, "vip");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record2 = new AddressBookInfoRecord(key, "melbourne");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record3 = new AddressBookInfoRecord(key, "sydney");
+        repo.saveAddressBookInfo(record1);
+        repo.saveAddressBookInfo(record2);
+        repo.saveAddressBookInfo(record3);
+
+        List<AddressBookInfoRecord> records = repo.findAddressBookInfoByName("vip");
+        assertThat(records).isNotEmpty().hasSize(1).extracting("id", "name")
+                .contains(tuple(1L, "vip"));
+    }
+
+    @Test
+    public void findAddressBookInfoByName_AllMatch() {
+        Long key = keyGenerator.get();
+        AddressBookInfoRecord record1 = new AddressBookInfoRecord(key, "vip");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record2 = new AddressBookInfoRecord(key, "melbourne");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record3 = new AddressBookInfoRecord(key, "sydney");
+        repo.saveAddressBookInfo(record1);
+        repo.saveAddressBookInfo(record2);
+        repo.saveAddressBookInfo(record3);
+
+        List<AddressBookInfoRecord> records = repo.findAddressBookInfoByName("");
+        assertThat(records).isNotEmpty().hasSize(3).extracting("id", "name")
+                .contains(tuple(1L, "vip"),
+                        tuple(2L, "melbourne"),
+                        tuple(3L, "sydney"));
+    }
+
+    @Test
+    public void findAddressBookInfoByName_NoMatchingRecords() {
+        Long key = keyGenerator.get();
+        AddressBookInfoRecord record1 = new AddressBookInfoRecord(key, "vip");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record2 = new AddressBookInfoRecord(key, "melbourne");
+        key = keyGenerator.incrementAndGet();
+        AddressBookInfoRecord record3 = new AddressBookInfoRecord(key, "sydney");
+        repo.saveAddressBookInfo(record1);
+        repo.saveAddressBookInfo(record2);
+        repo.saveAddressBookInfo(record3);
+
+        List<AddressBookInfoRecord> records = repo.findAddressBookInfoByName("tom");
+        assertThat(records).isEmpty();
+    }
+
+    @Test
+    public void findAddressBookInfoByName_NullName() {
+
+        assertThatThrownBy(() ->
+        { repo.findAddressBookInfoByName(null); }).hasMessage("name is required");
+    }
+
 
 }
