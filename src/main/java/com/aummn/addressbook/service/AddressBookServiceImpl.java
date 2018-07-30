@@ -2,6 +2,7 @@ package com.aummn.addressbook.service;
 
 import com.aummn.addressbook.model.AddressBookRecord;
 import com.aummn.addressbook.model.Contact;
+import com.aummn.addressbook.repo.AddressBookRepository;
 import com.aummn.addressbook.repo.AddressBookRepositoryImpl;
 
 import java.util.List;
@@ -21,10 +22,10 @@ import java.util.stream.Collectors;
  */
 public class AddressBookServiceImpl implements AddressBookService {
 
-    private AddressBookRepositoryImpl repo = null;
+    private AddressBookRepository repo;
 
-    public AddressBookServiceImpl(AddressBookRepositoryImpl repo) {
-        this.repo = repo;
+    public AddressBookServiceImpl() {
+        this.repo = new AddressBookRepositoryImpl();
     }
 
     public Contact addContact(Contact c, long addressBookId) {
@@ -34,36 +35,11 @@ public class AddressBookServiceImpl implements AddressBookService {
         return new Contact(savedRecord.getId(),savedRecord.getName(), savedRecord.getPhone());
     }
 
-    public List<Contact> addContacts(List<Contact> contacts, long addressBookId) {
-        if(contacts == null) throw new IllegalArgumentException("contacts is required");
-
-        // build the list of AddressBookRecord objects
-        List<AddressBookRecord> records = contacts.stream()
-                .map(contact ->
-                        new AddressBookRecord(contact.getName(), contact.getPhone(), addressBookId))
-                .collect(Collectors.toList());
-
-        // saveRecord records to the address book
-        return repo.saveRecords(records).stream()
-                .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
-                .collect(Collectors.toList());
-    }
-
-    public List<Contact> addContacts(List<Contact> contacts, List<Long> addressBookIds) {
-        if(contacts == null) throw new IllegalArgumentException("contacts is required");
-        if(addressBookIds == null) throw new IllegalArgumentException("address book ids is required");
-
-        List<Contact> contactList = addressBookIds.stream()
-                .map(addressBookId -> this.addContacts(contacts, addressBookId))
-                .flatMap(x-> x.stream())
-                .collect(Collectors.toList());
-
-        return contactList;
-    }
-
-    public void removeContact(Contact contact) {
+    public Optional<Contact> removeContact(Contact contact) {
         if(contact == null) throw new IllegalArgumentException("contact is required");
-        repo.removeRecord(contact.getId());
+        return repo.removeRecord(contact.getId())
+                .map(r -> Optional.of(new Contact(r.getId(), r.getName(), r.getPhone())))
+                .orElse(Optional.empty());
 
     }
 
@@ -74,10 +50,11 @@ public class AddressBookServiceImpl implements AddressBookService {
                 .orElse(Optional.empty());
     }
 
-    public void removeContacts(List<Contact> contacts) {
-        if(contacts == null) throw new IllegalArgumentException("contacts is required");
-        List<Long> ids = contacts.stream().map(c -> c.getId()).collect(Collectors.toList());
-        repo.removeRecords(ids);
+    public List<Contact> findContact(String searchString) {
+        if(searchString == null) throw new IllegalArgumentException("search string is required");
+        return repo.findRecord(searchString).stream()
+                .map(r -> new Contact(r.getId(), r.getName(), r.getPhone()))
+                .collect(Collectors.toList());
     }
 
     public List<Contact> printContacts(Long addressBookId) {
@@ -87,14 +64,14 @@ public class AddressBookServiceImpl implements AddressBookService {
     }
 
     public List<Contact> printContacts(List<Long> addressBookIds) {
-        if(addressBookIds == null) throw new IllegalArgumentException("addressBookIds is required");
+        if(addressBookIds == null) throw new IllegalArgumentException("addressBook Ids is required");
         return repo.findAllRecordsByAbids(addressBookIds).stream()
                 .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
                 .collect(Collectors.toList());
     }
 
     public List<Contact> printUniqueContacts(List<Long> addressBookIds) {
-        if(addressBookIds == null) throw new IllegalArgumentException("addressBookIds is required");
+        if(addressBookIds == null) throw new IllegalArgumentException("addressBook Ids is required");
         return repo.findAllRecordsByAbids(addressBookIds).stream()
                 .map(record -> new Contact(record.getId(), record.getName(), record.getPhone()))
                 .filter(distinctByKey(Contact::getContents))

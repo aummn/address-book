@@ -1,7 +1,6 @@
 package com.aummn.addressbook.service;
 
 import com.aummn.addressbook.model.Contact;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -23,33 +22,14 @@ public interface AddressBookService {
      */
     Contact addContact(Contact contact, long addressBookId);
 
-
-    /**
-     * Add some contacts into an address book.
-     *
-     * @param contacts contact entries with name and phone
-     * @param addressBookId the id of an address book
-     * @return a list of Contact objects
-     */
-    List<Contact> addContacts(List<Contact> contacts, long addressBookId);
-
-
-    /**
-     * Add some contacts into multiple address books.
-     *
-     * @param contacts contact entries with name and phone
-     * @param addressBookIds the ids of address books
-     * @return a list of Contact objects
-     */
-    List<Contact> addContacts(List<Contact> contacts, List<Long> addressBookIds);
-
     /**
      * Remove a contact.
      *
      * @param contact a contact entry with id, name and phone
+     * @return an Optional object
      *
      */
-    void removeContact(Contact contact);
+    Optional<Contact> removeContact(Contact contact);
 
     /**
      * Find a contact.
@@ -60,13 +40,15 @@ public interface AddressBookService {
      */
     Optional<Contact> findContact(Contact contact);
 
+
     /**
-     * Remove a list of contacts.
+     * Find a list of contacts.
      *
-     * @param contacts a list of Contact objects
+     * @param searchString a string containing id, or name, or phone
+     * @return a list of Contact object
      *
      */
-    void removeContacts(List<Contact> contacts);
+    List<Contact> findContact(String searchString);
 
     /**
      * Find all contacts of an address book.

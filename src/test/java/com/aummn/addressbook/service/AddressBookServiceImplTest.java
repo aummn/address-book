@@ -60,185 +60,6 @@ public class AddressBookServiceImplTest {
           { service.addContact(null, 1L); }).hasMessage("contact is required");
     }
 
-
-    @Test
-    public void addTwoContactsToSingleAddressBook() {
-        Contact c1 = new Contact();
-        c1.setName("peter");
-        c1.setPhone("0430111002");
-
-        Contact c2 = new Contact();
-        c2.setName("donald");
-        c2.setPhone("0435495021");
-
-        AddressBookRecord inputRecord1 = new AddressBookRecord();
-        inputRecord1.setName(c1.getName());
-        inputRecord1.setPhone(c1.getPhone());
-        inputRecord1.setAbid(1L);
-
-        AddressBookRecord outputRecord1 = new AddressBookRecord();
-        outputRecord1.setId(1L);
-        outputRecord1.setName(c1.getName());
-        outputRecord1.setPhone(c1.getPhone());
-        outputRecord1.setAbid(1L);
-
-        AddressBookRecord inputRecord2 = new AddressBookRecord();
-        inputRecord2.setName(c2.getName());
-        inputRecord2.setPhone(c2.getPhone());
-        inputRecord2.setAbid(1L);
-
-        AddressBookRecord outputRecord2 = new AddressBookRecord();
-        outputRecord2.setId(2L);
-        outputRecord2.setName(c2.getName());
-        outputRecord2.setPhone(c2.getPhone());
-        outputRecord2.setAbid(1L);
-
-        List<Contact> contacts = Arrays.asList(c1, c2);
-
-        when(repository.saveRecords(eq(Arrays.asList(inputRecord1, inputRecord2))))
-                .thenReturn(Arrays.asList(outputRecord1, outputRecord2));
-
-
-        List<Contact> contactList = service.addContacts(contacts, 1L);
-        verify(repository, times(1)).saveRecords(eq(Arrays.asList(inputRecord1, inputRecord2)));
-
-        assertThat(contactList).hasSize(2).extracting("id", "name", "phone")
-                .contains(tuple(1L, "peter", "0430111002"),
-                        tuple(2L, "donald", "0435495021"));
-    }
-
-    @Test
-    public void addTwoContactsToSingleAddressBook_MissingContacts() {
-
-        assertThatThrownBy(() ->
-        { service.addContacts(null, 1L); }).hasMessage("contacts is required");
-    }
-
-    @Test
-    public void addTwoContactsToSingleAddressBook_EmptyContacts() {
-
-        List<Contact> contactList = service.addContacts(new ArrayList<>(), 1L);
-        assertThat(contactList).isEmpty();
-    }
-
-
-    @Test
-    public void addTwoContactsToTwoAddressBooks() {
-        Contact c1 = new Contact();
-        c1.setName("peter");
-        c1.setPhone("0430111002");
-
-        Contact c2 = new Contact();
-        c2.setName("donald");
-        c2.setPhone("0435495021");
-
-        AddressBookRecord inputRecord1 = new AddressBookRecord();
-        inputRecord1.setName(c1.getName());
-        inputRecord1.setPhone(c1.getPhone());
-        inputRecord1.setAbid(1L);
-
-        AddressBookRecord outputRecord1 = new AddressBookRecord();
-        outputRecord1.setId(1L);
-        outputRecord1.setName(c1.getName());
-        outputRecord1.setPhone(c1.getPhone());
-        outputRecord1.setAbid(1L);
-
-        AddressBookRecord inputRecord2 = new AddressBookRecord();
-        inputRecord2.setName(c2.getName());
-        inputRecord2.setPhone(c2.getPhone());
-        inputRecord2.setAbid(1L);
-
-        AddressBookRecord outputRecord2 = new AddressBookRecord();
-        outputRecord2.setId(2L);
-        outputRecord2.setName(c2.getName());
-        outputRecord2.setPhone(c2.getPhone());
-        outputRecord2.setAbid(1L);
-
-
-        AddressBookRecord inputRecord3 = new AddressBookRecord();
-        inputRecord3.setName(c1.getName());
-        inputRecord3.setPhone(c1.getPhone());
-        inputRecord3.setAbid(2L);
-
-        AddressBookRecord outputRecord3 = new AddressBookRecord();
-        outputRecord3.setId(3L);
-        outputRecord3.setName(c1.getName());
-        outputRecord3.setPhone(c1.getPhone());
-        outputRecord3.setAbid(2L);
-
-        AddressBookRecord inputRecord4 = new AddressBookRecord();
-        inputRecord4.setName(c2.getName());
-        inputRecord4.setPhone(c2.getPhone());
-        inputRecord4.setAbid(2L);
-
-        AddressBookRecord outputRecord4 = new AddressBookRecord();
-        outputRecord4.setId(4L);
-        outputRecord4.setName(c2.getName());
-        outputRecord4.setPhone(c2.getPhone());
-        outputRecord4.setAbid(2L);
-
-        when(repository.saveRecords(eq(Arrays.asList(inputRecord1, inputRecord2))))
-                .thenReturn(Arrays.asList(outputRecord1, outputRecord2));
-
-        when(repository.saveRecords(eq(Arrays.asList(inputRecord3, inputRecord4))))
-                .thenReturn(Arrays.asList(outputRecord3, outputRecord4));
-
-        List<Contact> contactList = service.addContacts(Arrays.asList(c1, c2), Arrays.asList(1L, 2L));
-        verify(repository, times(1)).saveRecords(Arrays.asList(inputRecord1, inputRecord2));
-        verify(repository, times(1)).saveRecords(Arrays.asList(inputRecord3, inputRecord4));
-
-        assertThat(contactList).hasSize(4).extracting("id", "name", "phone")
-                .contains(tuple(1L, "peter", "0430111002"),
-                        tuple(2L, "donald", "0435495021"),
-                        tuple(3L, "peter", "0430111002"),
-                        tuple(4L, "donald", "0435495021"));
-    }
-
-    @Test
-    public void addTwoContactsToTwoAddressBooks_MissingContacts() {
-
-        assertThatThrownBy(() ->
-        { service.addContacts(null, Arrays.asList(1L, 2L)); }).hasMessage("contacts is required");
-    }
-
-    @Test
-    public void addTwoContactsToTwoAddressBooks_MissingAddessBookIds() {
-
-        Contact c1 = new Contact();
-        c1.setName("peter");
-        c1.setPhone("0430111002");
-
-        Contact c2 = new Contact();
-        c2.setName("donald");
-        c2.setPhone("0435495021");
-
-        assertThatThrownBy(() ->
-        { service.addContacts(Arrays.asList(c1, c2), null); }).hasMessage("address book ids is required");
-    }
-
-    @Test
-    public void addTwoContactsToTwoAddressBooks_EmptyContacts() {
-
-        List<Contact> contactList = service.addContacts(new ArrayList<>(), Arrays.asList(1L, 2L));
-        assertThat(contactList).isEmpty();
-    }
-
-    @Test
-    public void addTwoContactsToTwoAddressBooks_EmptyAddressIds() {
-
-        Contact c1 = new Contact();
-        c1.setName("peter");
-        c1.setPhone("0430111002");
-
-        Contact c2 = new Contact();
-        c2.setName("donald");
-        c2.setPhone("0435495021");
-
-        List<Contact> contactList = service.addContacts(Arrays.asList(c1, c2), new ArrayList<>());
-        assertThat(contactList).isEmpty();
-    }
-
-
     @Test
     public void findContact() {
 
@@ -270,7 +91,41 @@ public class AddressBookServiceImplTest {
     public void findContact_MissingContact() {
 
         assertThatThrownBy(() ->
-        { service.findContact(null); }).hasMessage("contact is required");
+        { service.findContact((Contact)null); }).hasMessage("contact is required");
+    }
+
+
+    @Test
+    public void findContact_SearchString() {
+
+        Contact c1 = new Contact();
+        c1.setId(1L);
+        c1.setName("peter");
+        c1.setPhone("0430111002");
+
+        AddressBookRecord record1 = new AddressBookRecord(1, "peter", "0430111002", 1);
+        AddressBookRecord record2 = new AddressBookRecord(2, "donald", "0435495021", 1);
+        AddressBookRecord record3 = new AddressBookRecord(3, "dick", "0402124587", 1);
+
+        AddressBookRecord record4 = new AddressBookRecord(4, "tom", "0422484920", 2L);
+        AddressBookRecord record5 = new AddressBookRecord(5, "sam", "0430823002", 2L);
+        AddressBookRecord record6 = new AddressBookRecord(6, "larry", "0435498247", 2L);
+
+        when(repository.findRecord("1"))
+                .thenReturn(Arrays.asList(record1, record2, record3));
+        List<Contact> contactList = service.findContact("1");
+        assertThat(contactList).isNotEmpty().hasSize(3).extracting("id", "name", "phone")
+                .contains(tuple(1L, "peter", "0430111002"),
+                        tuple(2L, "donald", "0435495021"),
+                        tuple(3L, "dick", "0402124587"));
+
+        when(repository.findRecord("7"))
+                .thenReturn(Arrays.asList(record3, record6));
+        contactList = service.findContact(String.valueOf(7));
+        assertThat(contactList).isNotEmpty().hasSize(2).extracting("id", "name", "phone")
+                .contains(tuple(3L, "dick", "0402124587"),
+                          tuple(6L, "larry", "0435498247")
+                        );
     }
 
 
@@ -282,10 +137,12 @@ public class AddressBookServiceImplTest {
         c1.setName("peter");
         c1.setPhone("0430111002");
 
-        doNothing().when(repository).removeRecord(1L);
+        AddressBookRecord record = new AddressBookRecord(1, "peter", "0430111002", 1);
+        when(repository.removeRecord(1L)).thenReturn(Optional.of(record));
 
-        service.removeContact(c1);
+        Optional<Contact> removedContactOptional = service.removeContact(c1);
         verify(repository, times(1)).removeRecord(1L);
+        assertThat(removedContactOptional.get()).isEqualTo(c1);
     }
 
     @Test
@@ -296,33 +153,7 @@ public class AddressBookServiceImplTest {
     }
 
     @Test
-    public void removeContacts() {
-
-        Contact c1 = new Contact();
-        c1.setId(1L);
-        c1.setName("peter");
-        c1.setPhone("0430111002");
-
-        Contact c2 = new Contact();
-        c2.setId(2L);
-        c2.setName("donald");
-        c2.setPhone("0435495021");
-
-        doNothing().when(repository).removeRecords(Arrays.asList(1L, 2L));
-        service.removeContacts(Arrays.asList(c1, c2));
-        verify(repository, times(1)).removeRecords(Arrays.asList(1L, 2L));
-    }
-
-    @Test
-    public void removeContacts_MissingContacts() {
-
-        assertThatThrownBy(() ->
-        { service.removeContacts(null); }).hasMessage("contacts is required");
-    }
-
-
-    @Test
-    public void printContacts() {
+    public void printContacts_SingleAddressBook() {
 
         AddressBookRecord record1 = new AddressBookRecord();
         record1.setId(1L);
@@ -423,7 +254,7 @@ public class AddressBookServiceImplTest {
     public void printContacts_MultipleAddressBooks_MissingContacts() {
 
         assertThatThrownBy(() ->
-        { service.printContacts((List)null); }).hasMessage("addressBookIds is required");
+        { service.printContacts((List)null); }).hasMessage("addressBook Ids is required");
     }
 
 
@@ -481,7 +312,7 @@ public class AddressBookServiceImplTest {
     public void printUniqueContacts_MultipleAddressBooks_MissingContacts() {
 
         assertThatThrownBy(() ->
-        { service.printUniqueContacts((List)null); }).hasMessage("addressBookIds is required");
+        { service.printUniqueContacts((List)null); }).hasMessage("addressBook Ids is required");
     }
 
 }
