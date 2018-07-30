@@ -3,7 +3,7 @@ package com.aummn.addressbook.model;
 import java.util.Objects;
 
 /**
- * This class holding the address book information including the id and name.
+ * This class holding the address book information.
  *
  * @author James Jin
  * @version 1.0 21/07/2018
@@ -15,6 +15,10 @@ public class AddressBookInfo {
     private String name;
 
     public AddressBookInfo() {}
+
+    public AddressBookInfo(String name) {
+        this.name = name;
+    }
 
     public AddressBookInfo(long id, String name) {
         this.id = id;

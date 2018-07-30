@@ -3,7 +3,7 @@ package com.aummn.addressbook.model;
 import java.util.Objects;
 
 /**
- * This class holding the contact information including the name and phone numbers.
+ * This class holding the contact information.
  *
  * @author James Jin
  * @version 1.0 21/07/2018
@@ -16,6 +16,10 @@ public class Contact {
     private String phone;
 
     public Contact() {}
+
+    public Contact(String name) {
+        this.name = name;
+    }
 
     public Contact(String name, String phone) {
         this.name = name;
